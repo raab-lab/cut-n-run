@@ -12,7 +12,7 @@ process multiqc {
 
 	output:
 	path "multiqc_report.html"
-	path "mutliqc_data"
+	path "multiqc_data"
 
 	"""
 	multiqc .	

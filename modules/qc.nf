@@ -26,9 +26,11 @@ process trim {
 // Insert sizes
 
 process picard_cis {
+	tag "${meta.id}"
 	label 'medium'
 	publishDir "${params.outdir}/${meta.id}/qc"
 	module 'picard/2.20.0'
+	module 'r/3.6.0'
 
 	input:
 	tuple val(meta), path(bam), path(bai)

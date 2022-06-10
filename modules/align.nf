@@ -22,7 +22,7 @@ process bt2 {
 
 	"""
 	bowtie2 \\
-		-x $index \\
+		-x ${index}/genome \\
 		-p ${task.cpus} \\
 		--very-sensitive-local \\
 		-X 800 \\
