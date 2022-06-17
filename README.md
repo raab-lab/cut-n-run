@@ -14,4 +14,14 @@ which is a set of processes and channels that constitute the pipeline.
 Components
 ==========
 
+## Tools to implement
 
+- [X] Trim and FastQC
+- [X] Alignment
+- [ ] Cat/merge across lanes
+- [X] Sort and index
+- [X] Peak calling
+- [X] Insert size QC
+- [ ] Remove duplicates
+- [ ] Normalization factors
+- [ ] Normalized coverage tracks
