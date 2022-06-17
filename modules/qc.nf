@@ -28,9 +28,10 @@ process trim {
 process picard_cis {
 	tag "${meta.id}"
 	label 'medium'
-	publishDir "${params.outdir}/${meta.id}/qc"
 	module 'picard/2.20.0'
 	module 'r/3.6.0'
+
+	publishDir "${params.outdir}/${meta.id}/qc"
 
 	input:
 	tuple val(meta), path(bam), path(bai)
@@ -38,10 +39,38 @@ process picard_cis {
 	output:
 	path "*metrics*", emit: metrics
 
+	script:
 	"""
 	picard CollectInsertSizeMetrics \\
 		I=${bam} \\
 		O=${meta.id}_metrics.txt \\
 		H=${meta.id}_histogram.pdf
+	"""
+}
+
+// Remove duplicates
+
+process picard_md {
+	tag "$meta.id"
+	label "large"
+	module 'picard/2.20.0'
+	module 'r/3.6.0'
+
+	publishDir "${params.outdir}/${meta.id}/qc"
+
+	input:
+	tuple val(meta), path(bam), path(bai)
+
+	output:
+	tuple val(meta), path("*sorted_markdup.bam"), path("*.bai"), emit: bam
+	path "*metrics.txt", emit: metrics
+
+	script:
+	"""
+	picard MarkDuplicates \\
+		I=$bam \\
+		O=${meta.id}_sorted_markdup.bam \\
+		M=${meta.id}_dup_metrics.txt \\
+		CREATE_INDEX=true
 	"""
 }

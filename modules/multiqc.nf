@@ -8,7 +8,8 @@ process multiqc {
 	path fastqc
 	path bt2_log
 	path macs_stats
-	path metrics
+	path ins_metrics
+	path dup_metrics
 
 	output:
 	path "multiqc_report.html"

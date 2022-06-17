@@ -17,12 +17,12 @@ params.outdir		= 'Output'
 
 include { trim }	from './modules/qc'
 include { picard_cis }	from './modules/qc'
+include { picard_md }	from './modules/qc'
 include { bt2 }		from './modules/align'
 include { sort }	from './modules/samtools'
 include { macs }	from './modules/macs'
 include { coverage }	from './modules/coverage'
 include { multiqc }	from './modules/multiqc'
-
 // Pull reads from sample sheet and set channel
 
 def parse_samplesheet(LinkedHashMap row){
@@ -54,6 +54,7 @@ workflow CNR {
 	bt2(trim.out.trimmed, params.bt2_index)
 	sort(bt2.out.bam)
 	picard_cis(sort.out)
+	picard_md(sort.out)
 
 	// Call peaks
 	macs(sort.out)
@@ -67,7 +68,8 @@ workflow CNR {
 		trim.out.fqc.collect(),
 		bt2.out.stats.collect(),
 		macs.out.stats.collect(),
-		picard_cis.out.collect()
+		picard_cis.out.collect(),
+		picard_md.out.metrics.collect()
 	)
 
 }

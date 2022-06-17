@@ -22,6 +22,7 @@ Components
 - [X] Sort and index
 - [X] Peak calling
 - [X] Insert size QC
-- [ ] Remove duplicates
+- [X] Remove duplicates
 - [ ] Normalization factors
 - [ ] Normalized coverage tracks
+- [X] MultiQC report
