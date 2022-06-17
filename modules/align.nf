@@ -2,9 +2,9 @@
 
 process bt2 {
 	tag "$meta.id"
-	cpus 4
+	cpus 8
 	memory '8GB'
-	time '4h'
+	time '24h'
 	publishDir "${params.outdir}/${meta.id}/aligned/"
 
 	module 'bowtie2/2.3.4.1'
