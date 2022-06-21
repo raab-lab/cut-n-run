@@ -23,6 +23,8 @@ Components
 - [X] Peak calling
 - [X] Insert size QC
 - [X] Remove duplicates
-- [ ] Normalization factors
-- [ ] Normalized coverage tracks
+- [X] Normalization factors
+- [ ] Coverage Tracks
+	- [X] 'Unnormalized' tracks
+	- [ ] Normalized tracks
 - [X] MultiQC report

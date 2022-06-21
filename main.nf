@@ -21,8 +21,10 @@ include { picard_md }	from './modules/qc'
 include { bt2 }		from './modules/align'
 include { sort }	from './modules/samtools'
 include { macs }	from './modules/macs'
+include { normalize }	from './modules/normalize'
 include { coverage }	from './modules/coverage'
 include { multiqc }	from './modules/multiqc'
+
 // Pull reads from sample sheet and set channel
 
 def parse_samplesheet(LinkedHashMap row){
@@ -59,8 +61,17 @@ workflow CNR {
 	// Call peaks
 	macs(sort.out)
 
-	// Compute coverage tracks (TODO: compute normalization factors for coverage)
-	coverage(sort.out, 1)
+	// Set a channel using the mark duped bams from picard grouped by antibody
+	// TODO: A better grouping system?
+	picard_md.out.bam
+	.map { row -> [ row[0].ab, row[0], row[1], row[2] ] }
+	.groupTuple(by: [0])
+	.set { ab_group_bams }
+
+ 	// Use dedup to compute scale factors and coverage
+ 	normalize(ab_group_bams)
+
+	coverage(picard_md.out.bam, 1)
 
 
 	// Collect all QC outputs to multiqc
