@@ -1,7 +1,7 @@
 CUT&RUN
 =======
 
-A Nextflow DSL2 implementation of the Raab Lab CUT&RUN processing pipeline. Design modeled after the ![nf-core](https://nf-co.re/cutandrun) implementation.
+A Nextflow DSL2 implementation of the Raab Lab CUT&RUN processing pipeline. Design modeled after the [nf-core](https://nf-co.re/cutandrun) implementation.
 
 In Nextflow, data flows through **channels** and into **processes**,
 which transforms the data in some way and produces an output that can be passed to another process.
