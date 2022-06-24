@@ -21,7 +21,9 @@ process coverage {
 		--smoothLength 60 \\
 		--numberOfProcessors $task.cpus \\
 		--scaleFactor $norm_factor \\
+		--normalizeUsing RPKM \\
 		--extendReads \\
+		--ignoreDuplicates \\
 		--effectiveGenomeSize 2308125349 \\
 	"""
 }
