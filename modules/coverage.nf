@@ -4,7 +4,7 @@ process coverage {
 	module 'deeptools/3.2.0'
 	label 'medium'
 	tag "${meta.id}"
-	publishDir "${params.outdir}/${meta.id}/aligned"
+	publishDir "${params.outdir}/bw", mode: "copy"
 
 	input:
 	tuple val(meta), path(bam), path(bai)
