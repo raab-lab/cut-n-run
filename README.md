@@ -25,8 +25,8 @@ Components
 - [X] Remove duplicates
 - [X] Normalization factors
 - [ ] Coverage Tracks
-	- [X] 'Unnormalized' tracks
-	- [ ] Normalized tracks
+	- [X] Single-sample Depth Normalized
+	- [ ] Multi-sample Group Normalized
 - [X] MultiQC report
 
 Usage
