@@ -12,7 +12,6 @@ Options:
   --winSize=val                 Size of windows for efficency method [default: 200].
   --binSize=val                 Size of bins for composition method or background for efficiency [default: 10000].
   --threshold=val               Log2 Fold enrichment to decided number of regions to keep [default: 3]
-  --simplifyNames               Should filenames in output csv be stripped of path and extension
   --keepdup                     flag for readParam object to keep marked duplicates
   --pe=both                     flag for readParam object to set paired read. One of both, none, first, or second [default: both]
   --maxFrag=val                 flag for readParam object to set maximum fragment size [default: 500]
@@ -74,7 +73,7 @@ if (args$peaks) {
   nf <- filtered_wc$norm.factors
   totals <- filtered_wc$totals
   scale_factors <- 1/(totals*(nf/1e6) )
-  names(scale_factors) <- basename(colData(wc)$bam.files) 
+  bam <- normalizePath(colData(wc)$bam.files) 
 }
 
 if (args$bins) {
@@ -87,14 +86,12 @@ if (args$bins) {
   nf <- binned$norm.factors
   totals <- binned$totals
   scale_factors <- 1 / ( totals*(nf/1e6) )
-  if (args$simplifyNames) { 
-    names(scale_factors) <- gsub("*.bam",'', basename(colData(binned)$bam.files))
-  } else { 
-    names(scale_factors) <- colData(binned)$bam.files 
-    }
+  bam <- normalizePath(binned$bam.files)
 }
 
-nf_out <- data.frame(names = names(scale_factors), scale_factors = scale_factors)
-write.table(nf_out, file = args$OUTPUT, row.names = F, col.names = F, sep = ',', quote = F)
+bai <- gsub("[.]bam", ".bai", bam)
+id <- gsub("_sorted_markdup.bam", "", basename(bam))
+nf_out <- data.frame(id = id, bam = bam, bai = bai, scale_factors = scale_factors)
+write.table(nf_out, file = args$OUTPUT, row.names = F, col.names = T, sep = ',', quote = F)
 
 
