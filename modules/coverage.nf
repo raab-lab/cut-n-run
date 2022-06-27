@@ -8,20 +8,29 @@ process coverage {
 
 	input:
 	tuple val(meta), path(bam), path(bai)
-	val norm_factor
+	val workflow
 
 	output:
 	tuple val(meta),  path("*.coverage.bw")
 
 	script:
+
+	def norm_method = ''
+	if (workflow == 1){
+		norm_method = "--normalizeUsing RPKM"
+		norm_flag = "rpkm"
+	} else {
+		norm_method = "--scaleFactor ${meta.norm_factor}"
+		norm_flag = "scaled"
+	}
+
 	"""
 	bamCoverage -b $bam \\
-		-o ${meta.id}.coverage.bw \\
+		-o ${meta.id}_${norm_flag}.coverage.bw \\
 		--binSize 30 \\
 		--smoothLength 60 \\
 		--numberOfProcessors $task.cpus \\
-		--scaleFactor $norm_factor \\
-		--normalizeUsing RPKM \\
+		$norm_method \\
 		--extendReads \\
 		--ignoreDuplicates \\
 		--effectiveGenomeSize 2308125349 \\

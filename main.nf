@@ -15,6 +15,7 @@ params.outdir		= 'Output'
 
 // import Cut and Run modules
 
+include { check_ss }	from './modules/check_samplesheet'
 include { trim }	from './modules/qc'
 include { picard_cis }	from './modules/qc'
 include { picard_md }	from './modules/qc'
@@ -29,25 +30,45 @@ include { multiqc }	from './modules/multiqc'
 
 def parse_samplesheet(LinkedHashMap row){
 	def meta = [:]
-	meta.id		= row.sample_name
+	meta.id		= row.ID
 	meta.lib_id	= row.lib_id
 	meta.cell_line	= row.cell_line
-	meta.ab		= row.ab
+	meta.ab		= row.antibody
+	if(row.containsKey('group')) {
+		meta.group = row.group
+	}
 
 	def array = [meta, file(row.read1), file(row.read2) ]
 
 	return array
 }
 
-Channel
-	.fromPath(params.sample_sheet)
-	.splitCsv(header:true)
-	.map { parse_samplesheet(it) }
-	.set { READS }
+def parse_norm_factors(LinkedHashMap row) {
+	def meta = [:]
+	meta.id			= row.id
+	meta.norm_factor	= row.scale_factors
 
-workflow CNR {
+	def array = [meta, file(row.bam), file(row.bai) ]
+
+	return array
+}
+
+//Channel
+//	.fromPath(params.sample_sheet)
+//	.splitCsv(header:true)
+//	.map { parse_samplesheet(it) }
+//	.set { READS }
+
+workflow CHECK_SAMPLES {
 
 	main:
+
+	// Check samplesheet columns and create unique ID
+	check_ss(params.sample_sheet, 1)
+	check_ss.out
+		.splitCsv(header:true)
+		.map { parse_samplesheet(it) }
+		.set { READS }
 
 	// Trim reads
 	trim(READS)
@@ -61,18 +82,8 @@ workflow CNR {
 	// Call peaks
 	macs(sort.out)
 
-	// Set a channel using the mark duped bams from picard grouped by antibody
-	// TODO: A better grouping system?
-	picard_md.out.bam
-	.map { row -> [ row[0].ab, row[0], row[1], row[2] ] }
-	.groupTuple(by: [0])
-	.set { ab_group_bams }
-
- 	// Use dedup to compute scale factors and coverage
- 	normalize(ab_group_bams)
-
+	// First pass of coverage, no normalization
 	coverage(picard_md.out.bam, 1)
-
 
 	// Collect all QC outputs to multiqc
 	multiqc(
@@ -83,8 +94,45 @@ workflow CNR {
 		picard_md.out.metrics.collect()
 	)
 
+	emit:
+	ss	= check_ss.out
+	bam	= picard_md.out.bam
+
+}
+
+workflow ANALYZE {
+
+	take:
+	ss
+	ch_bam
+
+	main:
+
+	// Check samplesheet columns and verify
+	// TODO: this part should now require a grouping variable
+	check_ss(ss, 2)
+	check_ss.out
+		.splitCsv(header:true)
+		.map { parse_samplesheet(it) }
+		.set { READS }
+
+	// Set a channel using the mark duped bams from picard using user defined groupings
+	ch_bam
+	.map { row -> [ row[0].group, row[0], row[1], row[2] ] }
+	.groupTuple(by: [0])
+	.set { group_bams }
+
+ 	// Use dedup to compute scale factors and coverage
+ 	normalize(group_bams)
+	normalize.out
+	.splitCsv(header:true)
+	.map { parse_norm_factors(it) }
+	.set { norm_bams }
+
+	coverage(norm_bams, 2)
 }
 
 workflow {
-	CNR()
+	CHECK_SAMPLES()
+	ANALYZE(CHECK_SAMPLES.out.ss, CHECK_SAMPLES.out.bam)
 }

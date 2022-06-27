@@ -24,9 +24,9 @@ Components
 - [X] Insert size QC
 - [X] Remove duplicates
 - [X] Normalization factors
-- [ ] Coverage Tracks
+- [X] Coverage Tracks
 	- [X] Single-sample Depth Normalized
-	- [ ] Multi-sample Group Normalized
+	- [X] Multi-sample Group Normalized
 - [X] MultiQC report
 
 Usage
