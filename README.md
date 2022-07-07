@@ -16,6 +16,9 @@ Components
 
 ## Tools to implement
 
+- [ ] Sample Sheet
+	- [ ] Sample sheet from directory
+	- [ ] Sample sheet error checking
 - [X] Trim and FastQC
 - [X] Alignment
 - [ ] Cat/merge across lanes
@@ -90,8 +93,9 @@ To run the CUT&RUN pipeline from start to finish, submit it as a job to the clus
     $ sbatch -t 24:00:00 -J "NF" --mem=10G -c 2 --wrap="nextflow run raab-lab/cut-n-run \
 								--sample_sheet samplesheet.csv \
 								-w work \
-								-with-report
-								-N <user@email.edu>
+								-with-report \
+								-N <user@email.edu> \
+								-latest \
 								-resume"
 
 The samplesheet should be formatted as specified [here](docs/params.md). Pipeline outputs can be found in the `Output` folder.
