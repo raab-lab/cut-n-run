@@ -6,7 +6,7 @@ Defaults can be found either in nextflow.config or main.nf.
 Nextflow
 --------
 
---sample_sheet
+`--sample_sheet`
 
 Path to the experiment samplesheet in csv format. It should be formatted as follows:
 

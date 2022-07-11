@@ -17,7 +17,7 @@ Components
 ## Tools to implement
 
 - [ ] Sample Sheet
-	- [ ] Sample sheet from directory
+	- [X] Sample sheet from directory
 	- [ ] Sample sheet error checking
 - [X] Trim and FastQC
 - [X] Alignment
@@ -38,16 +38,9 @@ Usage
 Getting Nextflow
 ----------------
 
-To download Nextflow:
+The easiest way to get Nextflow is to simply load from Longleaf:
 
-    $ curl -s https://get.nextflow.io | bash
-
-This will download the nextflow binary to the current dir.
-I keep this in ~/.local/bin so I can run nextflow straight from the command line:
-
-    ## Run if you don't have .local/bin
-    $ ## mkdir -p ~/.local/bin
-    $ mv nextflow ~/.local/bin
+    $ module load nextflow
 
 Since the pipeline is hosted on a private repo,
 we need to set up an access token for automatic retrieval.
@@ -80,14 +73,6 @@ Save the file and then run:
 Running Nextflow
 ----------------
 
-Before anything else, ensure that you have the most up to date version of the pipeline
-by running:
-
-    $ nextflow pull raab-lab/cut-n-run
-
-Nextflow will also warn you if you are behind versions,
-but this may be missed when you submit to the cluster.
-
 To run the CUT&RUN pipeline from start to finish, submit it as a job to the cluster:
 
     $ sbatch -t 24:00:00 -J "NF" --mem=10G -c 2 --wrap="nextflow run raab-lab/cut-n-run \
@@ -103,8 +88,10 @@ The samplesheet should be formatted as specified [here](docs/params.md). Pipelin
 Workflow Steps
 --------------
 
-This pipeline is implemented in two steps:
+This pipeline is implemented in three workflows:
 
-1. Trim reads and align, then find peaks, coverage, and other QC metrics. This step will output coverage tracks (bigwigs) and a QC report for judging sample quality and defining groupings for coverage normalization. To just run this step add `-entry CHECK_SAMPLES` to the above command.
+1. Create a barebones samplesheet from your fastq directory. This will only fill in fastq paths and the library ID for you, so other meta data will need to be filled in manually according to the [sample sheet format](docs/params.md). To run this stage replace `--sample_sheet` with `--create_samplesheet /path/to/fastq/dir`. The samplesheet can be found in the Output folder with name 'samplesheet.csv'.
 
-2. Calculate normalization factors with csaw (defaults to 'bin' method) and rescale coverage. This step calculates normalization factors based on the grouping defined in the samplesheet and outputs rescaled coverage tracks. To run this step simply run the above command.
+2. Trim reads and align, then find peaks, coverage, and other QC metrics. This step will output coverage tracks (bigwigs) and a QC report for judging sample quality and defining groupings for coverage normalization. To just run this step add `-entry CHECK_SAMPLES` to the above command.
+
+3. Calculate normalization factors with csaw (defaults to 'bin' method) and rescale coverage. This step calculates normalization factors based on the grouping defined in the samplesheet and outputs rescaled coverage tracks. To run this step simply run the above command.

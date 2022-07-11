@@ -10,11 +10,13 @@ nextflow.enable.dsl=2
  */
 
 // Define pipeline-wide params
-params.sample_sheet	= ''
-params.outdir		= 'Output'
+params.sample_sheet		= ''
+params.outdir			= 'Output'
+params.create_samplesheet 	= ''
 
 // import Cut and Run modules
 
+include { create_ss}	from './modules/create_samplesheet'
 include { check_ss }	from './modules/check_samplesheet'
 include { trim }	from './modules/qc'
 include { picard_cis }	from './modules/qc'
@@ -34,6 +36,8 @@ def parse_samplesheet(LinkedHashMap row){
 	meta.lib_id	= row.lib_id
 	meta.cell_line	= row.cell_line
 	meta.ab		= row.antibody
+	meta.trt	= row.treatment
+	meta.rep	= row.replicate
 	if(row.containsKey('group')) {
 		meta.group = row.group
 	}
@@ -59,6 +63,19 @@ def parse_norm_factors(LinkedHashMap row) {
 //	.map { parse_samplesheet(it) }
 //	.set { READS }
 
+workflow CREATE_SAMPLESHEET {
+
+	take:
+	inventory
+
+	main:
+
+	create_ss(inventory)
+
+	emit:
+	create_ss.out
+
+}
 workflow CHECK_SAMPLES {
 
 	main:
@@ -133,6 +150,16 @@ workflow ANALYZE {
 }
 
 workflow {
-	CHECK_SAMPLES()
-	ANALYZE(CHECK_SAMPLES.out.ss, CHECK_SAMPLES.out.bam)
+	if (params.create_samplesheet && params.sample_sheet) {
+		exit 1, "ERROR: Conflicting samplesheet arguments. Choose one or the other."
+	}
+
+	if (params.create_samplesheet) {
+		CREATE_SAMPLESHEET(params.create_samplesheet)
+	}
+
+	if (params.sample_sheet) {
+		CHECK_SAMPLES()
+		ANALYZE(CHECK_SAMPLES.out.ss, CHECK_SAMPLES.out.bam)
+	}
 }
