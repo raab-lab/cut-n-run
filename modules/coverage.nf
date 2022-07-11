@@ -5,6 +5,7 @@ process coverage {
 	label 'medium'
 	tag "${meta.id}"
 	publishDir "${params.outdir}/bw", mode: "copy"
+	publishDir "${params.outdir}/${meta.id}/bw"
 
 	input:
 	tuple val(meta), path(bam), path(bai)

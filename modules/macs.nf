@@ -4,7 +4,8 @@
 process macs {
 	label 'medium'
 	tag "$meta.id"
-	publishDir "${params.outdir}/${meta.id}/peaks/"
+	publishDir "${params.outdir}/peaks/", mode: "copy"
+	publishDir "${params.outdir}/${meta.id}/peaks"
 	module 'macs/2.2.7.1'
 
 	input:

@@ -5,6 +5,7 @@ process bt2 {
 	cpus 8
 	memory '8GB'
 	time '24h'
+	publishDir "${params.outdir}/bams", mode: "copy"
 	publishDir "${params.outdir}/${meta.id}/aligned/"
 
 	module 'bowtie2/2.3.4.1'

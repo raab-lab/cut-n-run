@@ -3,6 +3,7 @@
 process sort {
       label 'medium'
       tag "${meta.id}"
+      publishDir "${params.outdir}/bams/sorted", mode: "copy"
       publishDir "${params.outdir}/${meta.id}/aligned/"
       module 'samtools/1.9'
 
