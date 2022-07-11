@@ -7,7 +7,7 @@ args <- commandArgs(trailingOnly = T)
 SS <- read.csv(args[1])
 workflow <- args[2]
 
-cols <- c("read1", "read2", "lib_id", "cell_line", "antibody")
+cols <- c("read1", "read2", "lib_id", "cell_line", "antibody", "treatment", "replicate")
 
 if(workflow == "1"){
 	if( any( !(cols %in% colnames(SS)) ) ){
