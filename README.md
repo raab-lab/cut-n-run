@@ -70,28 +70,37 @@ Save the file and then run:
 
 **This is important because the access token is essentially a password so keep it safe.**
 
-Running Nextflow
-----------------
-
-To run the CUT&RUN pipeline from start to finish, submit it as a job to the cluster:
-
-    $ sbatch -t 24:00:00 -J "NF" --mem=10G -c 2 --wrap="nextflow run raab-lab/cut-n-run \
-								--sample_sheet samplesheet.csv \
-								-w work \
-								-with-report \
-								-N <user@email.edu> \
-								-latest \
-								-resume"
-
-The samplesheet should be formatted as specified [here](docs/params.md). Pipeline outputs can be found in the `Output` folder.
-
 Workflow Steps
 --------------
 
 This pipeline is implemented in three workflows:
 
-1. Create a barebones samplesheet from your fastq directory. This will only fill in fastq paths and the library ID for you, so other meta data will need to be filled in manually according to the [sample sheet format](docs/params.md). To run this stage replace `--sample_sheet` with `--create_samplesheet /path/to/fastq/dir`. The samplesheet can be found in the Output folder with name 'samplesheet.csv'.
+1. Create a barebones samplesheet from your fastq directory. This will only fill in fastq paths for you, **so other meta data will need to be filled in manually according to the [sample sheet format](docs/params.md)**.
 
-2. Trim reads and align, then find peaks, coverage, and other QC metrics. This step will output coverage tracks (bigwigs) and a QC report for judging sample quality and defining groupings for coverage normalization. To just run this step add `-entry CHECK_SAMPLES` to the above command.
+     $ nextflow run raab-lab/cut-n-run \
+				--create_samplesheet /full/path/to/fastq/dir/ \
+				-latest
 
-3. Calculate normalization factors with csaw (defaults to 'bin' method) and rescale coverage. This step calculates normalization factors based on the grouping defined in the samplesheet and outputs rescaled coverage tracks. To run this step simply run the above command.
+
+2. Trim reads and align, then find peaks, coverage, and other QC metrics. This step will output coverage tracks (bigwigs) and a QC report for judging sample quality and defining groupings for coverage normalization.
+
+    $ sbatch -t 24:00:00 -J NF --mem=10G -c 2 --wrap="nextflow run raab-lab/cut-n-run \
+							--sample_sheet /path/to/samplesheet \
+							-w work \
+							-with-report \
+							-N <user@email.edu> \
+							-latest \
+							-ansi-log false \
+							-resume"
+
+3. Lastly, calculate normalization factors with csaw (defaults to 'bin' method) and rescale coverage. This step calculates normalization factors based on the grouping defined in the samplesheet and outputs rescaled coverage tracks.
+
+    $ sbatch -t 24:00:00 -J NF --mem=10G -c 2 --wrap="nextflow run raab-lab/cut-n-run \
+							--sample_sheet /path/to/samplesheet \
+							--group_normalize \
+							-w work \
+							-with-report \
+							-N <user@email.edu> \
+							-latest \
+							-ansi-log false \
+							-resume"
