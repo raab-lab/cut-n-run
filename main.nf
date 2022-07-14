@@ -13,20 +13,23 @@ nextflow.enable.dsl=2
 params.sample_sheet		= ''
 params.outdir			= 'Output'
 params.create_samplesheet 	= ''
+params.group_normalize		= ''
 
 // import Cut and Run modules
 
-include { create_ss}	from './modules/create_samplesheet'
-include { check_ss }	from './modules/check_samplesheet'
-include { trim }	from './modules/qc'
-include { picard_cis }	from './modules/qc'
-include { picard_md }	from './modules/qc'
-include { bt2 }		from './modules/align'
-include { sort }	from './modules/samtools'
-include { macs }	from './modules/macs'
-include { normalize }	from './modules/normalize'
-include { coverage }	from './modules/coverage'
-include { multiqc }	from './modules/multiqc'
+include { create_ss}				from './modules/create_samplesheet'
+include { check_ss as check1}			from './modules/check_samplesheet'
+include { check_ss as check2}			from './modules/check_samplesheet'
+include { trim }				from './modules/qc'
+include { picard_cis }				from './modules/qc'
+include { picard_md }				from './modules/qc'
+include { bt2 }					from './modules/align'
+include { sort }				from './modules/samtools'
+include { macs }				from './modules/macs'
+include { normalize }				from './modules/normalize'
+include { coverage as single_coverage }		from './modules/coverage'
+include { coverage as group_coverage }		from './modules/coverage'
+include { multiqc }				from './modules/multiqc'
 
 // Pull reads from sample sheet and set channel
 
@@ -76,13 +79,14 @@ workflow CREATE_SAMPLESHEET {
 	create_ss.out
 
 }
-workflow CHECK_SAMPLES {
+
+workflow CNR {
 
 	main:
 
 	// Check samplesheet columns and create unique ID
-	check_ss(params.sample_sheet, 1)
-	check_ss.out
+	check1(params.sample_sheet, "single")
+	check1.out
 		.splitCsv(header:true)
 		.map { parse_samplesheet(it) }
 		.set { READS }
@@ -100,7 +104,7 @@ workflow CHECK_SAMPLES {
 	macs(sort.out)
 
 	// First pass of coverage, no normalization
-	coverage(picard_md.out.bam, 1)
+	single_coverage(picard_md.out.bam, 1)
 
 	// Collect all QC outputs to multiqc
 	multiqc(
@@ -111,42 +115,32 @@ workflow CHECK_SAMPLES {
 		picard_md.out.metrics.collect()
 	)
 
-	emit:
-	ss	= check_ss.out
-	bam	= picard_md.out.bam
+	
+	if(params.group_normalize){
 
-}
+		// Check samplesheet columns and verify group present
+		check2(params.sample_sheet, "group")
+		check2.out
+			.splitCsv(header:true)
+			.map { parse_samplesheet(it) }
+			.set { READS }
 
-workflow ANALYZE {
+		// Set a channel using the mark duped bams from picard using user defined groupings
+		picard_md.out.bam
+			.map { row -> [ row[0].group, row[0], row[1], row[2] ] }
+			.groupTuple(by: [0])
+			.set { group_bams }
 
-	take:
-	ss
-	ch_bam
+		// Use dedup to compute scale factors and coverage
+		normalize(group_bams)
+		normalize.out
+			.splitCsv(header:true)
+			.map { parse_norm_factors(it) }
+			.set { norm_bams }
 
-	main:
+		group_coverage(norm_bams, 2)
 
-	// Check samplesheet columns and verify
-	// TODO: this part should now require a grouping variable
-	check_ss(ss, 2)
-	check_ss.out
-		.splitCsv(header:true)
-		.map { parse_samplesheet(it) }
-		.set { READS }
-
-	// Set a channel using the mark duped bams from picard using user defined groupings
-	ch_bam
-	.map { row -> [ row[0].group, row[0], row[1], row[2] ] }
-	.groupTuple(by: [0])
-	.set { group_bams }
-
- 	// Use dedup to compute scale factors and coverage
- 	normalize(group_bams)
-	normalize.out
-	.splitCsv(header:true)
-	.map { parse_norm_factors(it) }
-	.set { norm_bams }
-
-	coverage(norm_bams, 2)
+	}
 }
 
 workflow {
@@ -159,7 +153,6 @@ workflow {
 	}
 
 	if (params.sample_sheet) {
-		CHECK_SAMPLES()
-		ANALYZE(CHECK_SAMPLES.out.ss, CHECK_SAMPLES.out.bam)
+		CNR()
 	}
 }
