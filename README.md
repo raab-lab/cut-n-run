@@ -85,22 +85,22 @@ This pipeline is implemented in three workflows:
 2. Trim reads and align, then find peaks, coverage, and other QC metrics. This step will output coverage tracks (bigwigs) and a QC report for judging sample quality and defining groupings for coverage normalization.
 
         $ sbatch -t 24:00:00 -J NF --mem=10G -c 2 --wrap="nextflow run raab-lab/cut-n-run \
-							--sample_sheet /path/to/samplesheet \
-							-w work \
-							-with-report \
-							-N <user@email.edu> \
-							-latest \
-							-ansi-log false \
-							-resume"
+								--sample_sheet /path/to/samplesheet \
+								-w work \
+								-with-report \
+								-N <user@email.edu> \
+								-latest \
+								-ansi-log false \
+								-resume"
 
 3. Lastly, calculate normalization factors with csaw (defaults to 'bin' method) and rescale coverage. This step calculates normalization factors based on the grouping defined in the samplesheet and outputs rescaled coverage tracks.
 
         $ sbatch -t 24:00:00 -J NF --mem=10G -c 2 --wrap="nextflow run raab-lab/cut-n-run \
-							--sample_sheet /path/to/samplesheet \
-							--group_normalize \
-							-w work \
-							-with-report \
-							-N <user@email.edu> \
-							-latest \
-							-ansi-log false \
-							-resume"
+								--sample_sheet /path/to/samplesheet \
+								--group_normalize \
+								-w work \
+								-with-report \
+								-N <user@email.edu> \
+								-latest \
+								-ansi-log false \
+								-resume"
