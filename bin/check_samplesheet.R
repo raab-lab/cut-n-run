@@ -21,7 +21,7 @@ if(workflow == "single"){
 
 	} else {
 
-		SS$ID <- paste(SS$lib_id, SS$cell_line, SS$antibody, sep = "_")
+		SS$ID <- with(SS, paste(lib_id, cell_line, antibody, treatment, replicate, sep = "_"))
 		write.csv(SS, "samplesheet_uniqID.csv", quote = F, row.names = F)
 
 	}
@@ -37,7 +37,7 @@ if(workflow == "group") {
 
 	} else {
 
-		SS$ID <- paste(SS$lib_id, SS$cell_line, SS$antibody, sep = "_")
+		SS$ID <- with(SS, paste(lib_id, cell_line, antibody, treatment, replicate, sep = "_"))
 		write.csv(SS, "samplesheet_grouped.csv", quote = F, row.names = F)
 
 	}
