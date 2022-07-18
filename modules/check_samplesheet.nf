@@ -2,7 +2,6 @@ process check_ss{
 	module 'r/4.1.0'
 	label 'single'
 	tag "Samplesheet"
-	executor 'local'
 
 	input:
 	path SS

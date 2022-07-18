@@ -2,7 +2,6 @@
 
 process create_ss {
 
-	executor 'local'
 	tag "samplesheet"
 	publishDir "$params.outdir", mode: "copy"
 
