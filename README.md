@@ -40,7 +40,7 @@ Getting Nextflow
 
 The easiest way to get Nextflow is to simply load from Longleaf:
 
-    $ module load nextflow
+    module load nextflow
 
 Since the pipeline is hosted on a private repo,
 we need to set up an access token for automatic retrieval.
@@ -53,7 +53,7 @@ and check the "repo" box under scopes. Then "Generate token".
 Once you have copied your token go to Longleaf
 and create a file called `scm` in `~/.nextflow` with your favorite editor:
 
-    $ vim ~/.nextflow/scm
+    vim ~/.nextflow/scm
 
 The file should have the following structure:
 
@@ -66,41 +66,23 @@ The file should have the following structure:
 
 Save the file and then run:
 
-    $ chmod go-rwx ~/.nextflow/scm
+    chmod go-rwx ~/.nextflow/scm
 
 **This is important because the access token is essentially a password so keep it safe.**
 
 Workflow Steps
 --------------
 
-This pipeline is implemented in three workflows:
+This pipeline is implemented in three workflows, helper scripts for running each step can be found ![here](helper).
 
-1. Create a barebones samplesheet from your fastq directory. This will only fill in fastq paths for you, **so other meta data will need to be filled in manually according to the [sample sheet format](docs/params.md)**.
+1. Create a barebones samplesheet from your fastq directory. This will only fill in fastq paths and the library ID (assumed to be everything before the first underscore in the filename), **so other meta data will need to be filled in manually according to the [sample sheet format](docs/params.md)**.
 
-         $ nextflow run raab-lab/cut-n-run \
-				--create_samplesheet /full/path/to/fastq/dir/ \
-				-latest
-
+    sbatch create_samplesheet.sh
 
 2. Trim reads and align, then find peaks, coverage, and other QC metrics. This step will output coverage tracks (bigwigs) and a QC report for judging sample quality and defining groupings for coverage normalization.
 
-        $ sbatch -t 24:00:00 -J NF --mem=10G -c 2 --wrap="nextflow run raab-lab/cut-n-run \
-								--sample_sheet /path/to/samplesheet \
-								-w work \
-								-with-report \
-								-N <user@email.edu> \
-								-latest \
-								-ansi-log false \
-								-resume"
+    sbatch cnr.sh
 
 3. Lastly, calculate normalization factors with csaw (defaults to 'bin' method) and rescale coverage. This step calculates normalization factors based on the grouping defined in the samplesheet and outputs rescaled coverage tracks.
 
-        $ sbatch -t 24:00:00 -J NF --mem=10G -c 2 --wrap="nextflow run raab-lab/cut-n-run \
-								--sample_sheet /path/to/samplesheet \
-								--group_normalize \
-								-w work \
-								-with-report \
-								-N <user@email.edu> \
-								-latest \
-								-ansi-log false \
-								-resume"
+    sbatch normalize.sh
