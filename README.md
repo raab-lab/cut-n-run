@@ -77,12 +77,12 @@ This pipeline is implemented in three workflows, helper scripts for running each
 
 1. Create a barebones samplesheet from your fastq directory. This will only fill in fastq paths and the library ID (assumed to be everything before the first underscore in the filename), **so other meta data will need to be filled in manually according to the [sample sheet format](docs/params.md)**.
 
-        sbatch create_samplesheet.sh
+       sbatch create_samplesheet.sh
 
 2. Trim reads and align, then find peaks, coverage, and other QC metrics. This step will output coverage tracks (bigwigs) and a QC report for judging sample quality and defining groupings for coverage normalization.
 
-        sbatch cnr.sh
+       sbatch cnr.sh
 
 3. Lastly, calculate normalization factors with csaw (defaults to 'bin' method) and rescale coverage. This step calculates normalization factors based on the grouping defined in the samplesheet and outputs rescaled coverage tracks.
 
-        sbatch normalize.sh
+       sbatch normalize.sh
