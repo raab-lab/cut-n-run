@@ -16,9 +16,9 @@ Components
 
 ## Tools to implement
 
-- [ ] Sample Sheet
+- [X] Sample Sheet
 	- [X] Sample sheet from directory
-	- [ ] Sample sheet error checking
+	- [X] Sample sheet error checking
 - [X] Trim and FastQC
 - [X] Alignment
 - [ ] Cat/merge across lanes
@@ -31,6 +31,10 @@ Components
 	- [X] Single-sample Depth Normalized
 	- [X] Multi-sample Group Normalized
 - [X] MultiQC report
+- [X] Airtable Integration
+	- [X] Pull Experiment
+	- [X] Update Sample Table
+	- [X] Pull Samples
 
 Usage
 =====
