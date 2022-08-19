@@ -16,6 +16,7 @@ params.create_samplesheet 	= ''
 params.new_experiment		= ''
 params.pull_samples		= ''
 params.group_normalize		= ''
+params.help			= false
 
 // import subworkflows
 
@@ -28,13 +29,19 @@ include { CNR as AT_CNR }				from './subworkflows/cnr'
 
 include { pull_experiment; pull_samples }		from './modules/airtable'
 include { update_paths }				from './modules/airtable'
+include { helpMessage }					from './modules/functions'
 
 workflow {
+
+	if (params.help) {
+		log.info helpMessage()
+	}
 
 	if (params.new_experiment) {
 	// TODO: Get experiment IDs into the samplesheet
 		pull_experiment(params.new_experiment) | AT_CREATE_SS | update_paths
 	}
+
 
 	if (params.pull_samples) {
 		pull_samples(params.pull_samples) | AT_CNR
