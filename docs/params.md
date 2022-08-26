@@ -24,40 +24,53 @@ Example:
     /path/to/R1,/path/to/R2,UniqID,HepG2,ARID1A,Sorafenib,1
 
 `--help`
+
 Display a help message
 
 `--create_samplesheet </path/>`
+
 Path to a directory of fastq.gz files
 
 `--sample_sheet </path/>`
+
 Path to CSV with fastq paths and sample metadata
 
 `--new_experiment <ID>`
+
 Experiment ID for new experiment to add to airtable
 
 `--pull_samples <ID>`
+
 Experiment ID to pull from airtable to run through pipeline
 
 `--group_normalize`
+
 Flag to use csaw to normalize coverage tracks using 'group' [Default: false]
 
 `-w </path/>`
+
 Path to your desired work directory for intermediate output [Default: work]
 
 `--outdir </path/>`
+
 Path to your desired output directory [Default: Output]
 
 `--bt2_index </path/>`
+
 Path to Bowtie2 index [Default:/proj/seq/data/hg38_UCSC/Sequence/Bowtie2Index/]
 
 `-latest`
+
 Flag to pull the latest pipeline release from GitHub
 
 `-with-report`
+
 Flag to output a run report
 
 `-N <user@email.edu>`
+
 Email address to notify when the pipeline has finished
 
 `-resume`
+
 Flag to pick back up from last pipeline execution (works even if first time)

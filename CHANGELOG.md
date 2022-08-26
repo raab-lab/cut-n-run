@@ -3,6 +3,19 @@ raab-lab/cut-n-run: Changelog
 
 The format of this changelog is based on the [nf-core](https://github.com/nf-core/rnaseq/blob/master/CHANGELOG.md) changelog.
 
+## [2.1] - 2022-08-26
+
+:exclamation: Big Enhancement
+
+This release integrates Airtable into the pipeline. This should facilitate easier sample sheet creation and provide a single location for all sequencing data to be stored.
+
+### Parameters
+
+| Old parameters         | New parameters         |
+| ---------------------- | ---------------------- |
+|                        | `--new_experiment`     |
+|                        | `--pull_samples`	  |
+
 ## [2.0] - 2022-07-20
 
 ### Updates
