@@ -115,13 +115,13 @@ Running the pipeline with airtable is implemented in 3 steps. Helper scripts can
 
 1. If you just received new data and need to process it for the first time, first fill out the Experiments table with the experiment type and where the raw fastq data is located (Data Directory). Then pull the new experiment, create a samplesheet, and update the samples table with the new samples. If you are re-running with an experiment already in the Samples *DONT RUN THIS STEP*, otherwise you'll duplicate records in the Samples table.
 
-    new_experiment.sh <EXPERIMENT ID>
+       new_experiment.sh <EXPERIMENT ID>
 
 2. After filling in experiment metadata for your samples, pull them and run all the analyses from [step 2](#workflow-steps) of the workflow.
 
-    sbatch pull_samples.sh
+       sbatch pull_samples.sh
 
 3. If you need to do group-wise normalization, simply run [step 3](#workflow-steps) as usual.
 
-    sbatch normalize.sh
+       sbatch normalize.sh
 
