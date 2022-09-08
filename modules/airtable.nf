@@ -4,6 +4,7 @@ process pull_experiment {
 
 	tag "AT Experiment"
 	executor 'local'
+	module 'python/3.8.8'
 
 	input:
 	val exp_id
@@ -21,6 +22,7 @@ process update_paths {
 
 	tag "Update"
 	executor 'local'
+	module 'python/3.8.8'
 
 	input:
 	path samplesheet
@@ -34,6 +36,7 @@ process update_paths {
 process pull_samples {
 
 	tag "AT Samples"
+	module 'python/3.8.8'
 
 	input:
 	val exp_id

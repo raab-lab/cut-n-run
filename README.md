@@ -92,15 +92,18 @@ This pipeline is implemented in three workflows, helper scripts for running each
 Airtable
 ---------
 
-This pipeline interfaces with the Raab Lab airtable. To set up airtable, go to your account page and copy your personal API key (you made need to generate it first).
+This pipeline interfaces with the Raab Lab airtable. We use [pyairtable](https://pyairtable.readthedocs.io/en/latest/) to interact with the Airtable API. Install it with:
 
-Now go to Longleaf and create a file called `.secrets` in your home directory:
+    module load python/3.8.8
+    pip install --user pyairtable
+
+Next, go to your account page and copy your personal API key (you made need to generate it first). Then go to Longleaf and create a file called `.secrets` in your home directory:
 
     vim ~/.secrets
 
 Add this line to the file:
 
-    export AIRTABLE_API_KEY=YOUR_API_KEY
+    export AIRTABLE_API_KEY=<YOUR_API_KEY>
 
 Save the file and then run:
 
