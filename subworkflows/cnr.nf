@@ -66,10 +66,10 @@ workflow CNR {
 	picard_md(sort.out)
 
 	// Call peaks
-	macs(sort.out)
+	macs(sort.out, params.genomeSize)
 
 	// First pass of coverage, no normalization
-	single_coverage(picard_md.out.bam, 1)
+	single_coverage(picard_md.out.bam, 1, params.genomeSize)
 
 	// Collect all QC outputs to multiqc
 	multiqc(
@@ -103,7 +103,7 @@ workflow CNR {
 			.map { parse_norm_factors(it) }
 			.set { norm_bams }
 
-		group_coverage(norm_bams, 2)
+		group_coverage(norm_bams, 2, params.genomeSize)
 
 	}
 }

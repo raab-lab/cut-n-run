@@ -3,6 +3,18 @@ raab-lab/cut-n-run: Changelog
 
 The format of this changelog is based on the [nf-core](https://github.com/nf-core/rnaseq/blob/master/CHANGELOG.md) changelog.
 
+## [2.2] - 2022-09-22
+
+### Updates
+
+This release adds an effective genome size parameter that is shared between bamCoverage and MAC2. The default is the effective human genome size for 50bp reads (see https://deeptools.readthedocs.io/en/latest/content/feature/effectiveGenomeSize.html). While we don't apply a mapping filter, we may in the future.
+
+### Parameters
+
+| Old parameters         | New parameters         |
+| ---------------------- | ---------------------- |
+|                        | `--genomeSize`         |
+
 ## [2.1] - 2022-08-26
 
 :exclamation: Big Enhancement

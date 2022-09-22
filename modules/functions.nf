@@ -8,11 +8,11 @@ def helpMessage() {
 	| |\\ \\ (_| | (_| | |_) | | |___| (_| | |_) | | \\__/\\ |_| | | | (_>  <| |\\ \\| |_| | |\\  |
 	\\_| \\_\\__,_|\\__,_|_.__/  \\_____/\\__,_|_.__/   \\____/\\___/  \\_/\\___/\\/\\_| \\_|\\___/\\_| \\_/
 	===========================================================================================
-	Usage:
+	\033[1;34mUsage\033[0m:
 	nextflow run raab-lab/cut-n-run (--create_samplesheet|--sample_sheet) </path/>
 	nextflow run raab-lab/cut-n-run (--new_experiment|--pull_samples) <ID>
 
-	Arguments:
+	\033[1;34mArguments\033[0m:
 	--help
 		Display this message
 
@@ -37,11 +37,14 @@ def helpMessage() {
 	--outdir </path/>
 		Path to your desired output directory [Default: Output]
 
-	Tool Options:
+	\033[1;34mTool Options\033[0m:
 	--bt2_index </path/>
 		Path to Bowtie2 index [Default:/proj/seq/data/hg38_UCSC/Sequence/Bowtie2Index/]
 
-	Arguments to Always Include:
+	--genomeSize <numeric>
+		Effective genome size for MACS2 and bamCoverage (see docs for more info) [Default: 2701495761]
+
+	\033[1;34mArguments to Always Include\033[0m:
 	-latest
 		Flag to pull the latest pipeline release from GitHub
 

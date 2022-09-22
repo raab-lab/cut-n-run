@@ -59,6 +59,12 @@ Path to your desired output directory [Default: Output]
 
 Path to Bowtie2 index [Default:/proj/seq/data/hg38_UCSC/Sequence/Bowtie2Index/]
 
+`--genomeSize <numeric>`
+
+Effective genome size for MACS2 and bamCoverage [Default: 2701495761]
+See https://deeptools.readthedocs.io/en/latest/content/feature/effectiveGenomeSize.html
+for info on choosing an effective size.
+
 `-latest`
 
 Flag to pull the latest pipeline release from GitHub
