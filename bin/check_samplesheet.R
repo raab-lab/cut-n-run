@@ -41,7 +41,7 @@ if(workflow == "single"){
 }
 
 if(workflow == "group") {
-	cols <- append(cols, "group")
+	cols <- append(cols, c("group_norm", "group_avg"))
 	missing <- !(cols %in% colnames(SS))
 	if( any(missing) ) {
 

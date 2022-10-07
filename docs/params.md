@@ -16,7 +16,8 @@ Path to the experiment samplesheet in csv format. It should be formatted as foll
 |Antibody	|Antibody used					|
 |Treatment	|Treatment or experimental conditions		|
 |Replicate	|Experimental replicate number			|
-|Group		|Normalization group (optional)			|
+|group_norm	|Scale factor normalization group (optional)	|
+|group_avg	|BigWig Averaging group (optional)		|
 
 Example:
 
@@ -45,7 +46,7 @@ Experiment ID to pull from airtable to run through pipeline
 
 `--group_normalize`
 
-Flag to use csaw to normalize coverage tracks using 'group' [Default: false]
+Flag to use csaw to normalize and average coverage tracks using 'group_norm' and 'group_avg', respectively [Default: false]
 
 `-w </path/>`
 
@@ -64,6 +65,25 @@ Path to Bowtie2 index [Default:/proj/seq/data/hg38_UCSC/Sequence/Bowtie2Index/]
 Effective genome size for MACS2 and bamCoverage [Default: 2701495761]
 See https://deeptools.readthedocs.io/en/latest/content/feature/effectiveGenomeSize.html
 for info on choosing an effective size.
+
+`--genome <value>`
+
+Genome to pull chromosome sizes from UCSC [Default: hg38]
+The module uses the script fetchChromSizes provided by UCSC,
+so only UCSC genome names are allowed i.e. hg38, mm10, etc.
+See https://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/fetchChromSizes
+
+`--norm_method` <value>
+
+Normalization method to use for scaling coverage tracks. Either 'bins' or 'peaks' [Default: bins]
+
+`--skip_filter`
+
+Flag to skip filtering of low quality alignments [Default: false]
+
+`--mapq <numeric>`
+
+Only include alignments with MAPQ >= <numeric> [Default: 10]
 
 `-latest`
 

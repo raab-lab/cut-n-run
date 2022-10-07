@@ -29,7 +29,7 @@ def helpMessage() {
 		Experiment ID to pull from airtable to run through pipeline
 
 	--group_normalize
-		Flag to use csaw to normalize coverage tracks using 'group' [Default: false]
+		Flag to normalize and average coverage tracks using group columns [Default: false]
 
 	-w </path/>
 		Path to your desired work directory for intermediate output [Default: work]
@@ -43,6 +43,18 @@ def helpMessage() {
 
 	--genomeSize <numeric>
 		Effective genome size for MACS2 and bamCoverage (see docs for more info) [Default: 2701495761]
+
+	--genome <value>
+		Genome name to pull for chromosome sizes [Default: hg38]
+
+	--norm_method <value>
+		Normalization method for computing coverage scale factors. Either 'bins' or 'peaks' [Default: bins]
+
+	--skip_filter
+		Flag to skip filtering bam files by MAPQ (i.e. include all alignments)
+
+	--mapq <numeric>
+		Only include alignments with MAPQ >= <numeric>
 
 	\033[1;34mArguments to Always Include\033[0m:
 	-latest
@@ -59,4 +71,19 @@ def helpMessage() {
 
 """.stripIndent()
 
+}
+
+process fetch_chrom_sizes {
+	tag "Fetch ${genome}"
+
+	input:
+	val(genome)
+
+	output:
+	path("${genome}.chrom.sizes")
+
+	script:
+	"""
+	fetchChromSizes $genome > ${genome}.chrom.sizes
+	"""
 }
