@@ -15,6 +15,7 @@ nextflow run raab-lab/cut-n-run \
 		--sample_sheet /path/to/samplesheet \
 		--group_normalize \
 		-w /path/to/work \
+		--outdir /path/to/Output \
 		-with-report \
 		-N <user@email.edu> \
 		-latest \
