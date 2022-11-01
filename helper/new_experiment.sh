@@ -1,7 +1,7 @@
 #!/bin/bash
 
 module add nextflow
-source ~/.secrets
+source ~/.secrets/airtable
 
 ## MODIFY THE EXPERIMENT ID FOR THE EXPERIMENT YOU WANT TO RUN
 nextflow run raab-lab/cut-n-run \

@@ -97,9 +97,9 @@ This pipeline interfaces with the Raab Lab airtable. We use [pyairtable](https:/
     module load python/3.8.8
     pip install --user pyairtable
 
-Next, go to your account page and copy your personal API key (you made need to generate it first). Then go to Longleaf and create a file called `.secrets` in your home directory:
+Next, go to your account page and copy your personal API key (you made need to generate it first). Then go to Longleaf and create a file called `.secrets/airtable` in your home directory (you will need to create the .secrets folder if you don't have one):
 
-    vim ~/.secrets
+    vim ~/.secrets/airtable
 
 Add this line to the file:
 
@@ -107,7 +107,7 @@ Add this line to the file:
 
 Save the file and then run:
 
-    chmod go-rwx ~/.secrets
+    chmod go-rwx ~/.secrets/airtable
 
 **This is important because the API key is essentially a password so keep it safe.**
 
