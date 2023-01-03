@@ -10,6 +10,7 @@ process macs {
 
 	input:
 	tuple val(meta), path(bam), path(bai)
+	val genomeSize
 
 	output:
 	tuple val(meta), path("*.narrowPeak"), emit: peaks
@@ -17,6 +18,6 @@ process macs {
 
 	script:
 	"""
-	macs2 callpeak -t ${bam} -n ${meta.id} -f BAMPE -g hs --call-summits -q 0.01
+	macs2 callpeak -t ${bam} -n ${meta.id} -f BAMPE -g $genomeSize --call-summits -q 0.01
 	"""
 }

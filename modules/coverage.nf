@@ -10,6 +10,7 @@ process coverage {
 	input:
 	tuple val(meta), path(bam), path(bai)
 	val workflow
+	val genomeSize
 
 	output:
 	tuple val(meta),  path("*.coverage.bw")
@@ -34,6 +35,6 @@ process coverage {
 		$norm_method \\
 		--extendReads \\
 		--ignoreDuplicates \\
-		--effectiveGenomeSize 2308125349 \\
+		--effectiveGenomeSize $genomeSize \\
 	"""
 }

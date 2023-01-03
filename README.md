@@ -14,23 +14,25 @@ which is a set of processes and channels that constitute the pipeline.
 Components
 ==========
 
-## Tools to implement
-
-- [ ] Sample Sheet
+- [X] Sample Sheet
 	- [X] Sample sheet from directory
-	- [ ] Sample sheet error checking
-- [X] Trim and FastQC
-- [X] Alignment
+	- [X] Sample sheet error checking
+- [X] Trim and FastQC - TrimGalore
+- [X] Alignment - Bowtie2
 - [ ] Cat/merge across lanes
-- [X] Sort and index
-- [X] Peak calling
-- [X] Insert size QC
-- [X] Remove duplicates
-- [X] Normalization factors
-- [X] Coverage Tracks
+- [X] Sort and index - samtools
+- [X] Peak calling - macs2
+- [X] Insert size QC - picard
+- [X] Remove duplicates - picard
+- [X] Normalization factors - csaw
+- [X] Coverage Tracks - deepTools
 	- [X] Single-sample Depth Normalized
 	- [X] Multi-sample Group Normalized
-- [X] MultiQC report
+- [X] MultiQC report - multiQC
+- [X] Airtable Integration
+	- [X] Pull Experiment
+	- [X] Update Sample Table
+	- [X] Pull Samples
 
 Usage
 =====
@@ -86,3 +88,43 @@ This pipeline is implemented in three workflows, helper scripts for running each
 3. Lastly, calculate normalization factors with csaw (defaults to 'bin' method) and rescale coverage. This step calculates normalization factors based on the grouping defined in the samplesheet and outputs rescaled coverage tracks.
 
        sbatch normalize.sh
+
+Airtable
+---------
+
+This pipeline interfaces with the Raab Lab airtable. We use [pyairtable](https://pyairtable.readthedocs.io/en/latest/) to interact with the Airtable API. Install it with:
+
+    module load python/3.8.8
+    pip install --user pyairtable
+
+Next, go to your account page and copy your personal API key (you made need to generate it first). Then go to Longleaf and create a file called `.secrets/airtable` in your home directory (you will need to create the .secrets folder if you don't have one):
+
+    vim ~/.secrets/airtable
+
+Add this line to the file:
+
+    export AIRTABLE_API_KEY=<YOUR_API_KEY>
+
+Save the file and then run:
+
+    chmod go-rwx ~/.secrets/airtable
+
+**This is important because the API key is essentially a password so keep it safe.**
+
+Airtable Steps
+--------------
+
+Running the pipeline with airtable is implemented in 3 steps. Helper scripts can be found ![here](helper).
+
+1. If you just received new data and need to process it for the first time, first fill out the Experiments table with the experiment type and where the raw fastq data is located (Data Directory). Then pull the new experiment, create a samplesheet, and update the samples table with the new samples. If you are re-running with an experiment already in the Samples *DONT RUN THIS STEP*, otherwise you'll duplicate records in the Samples table.
+
+       new_experiment.sh <EXPERIMENT ID>
+
+2. After filling in experiment metadata for your samples, pull them and run all the analyses from [step 2](#workflow-steps) of the workflow.
+
+       sbatch pull_samples.sh
+
+3. If you need to do group-wise normalization, simply run [step 3](#workflow-steps) as usual.
+
+       sbatch normalize.sh
+

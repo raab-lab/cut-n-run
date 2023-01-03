@@ -9,7 +9,7 @@ process bt2 {
 	publishDir "${params.outdir}/${meta.id}/aligned/"
 
 	module 'bowtie2/2.3.4.1'
-	module 'samtools/1.9'
+	module 'samtools/1.16'
 
 	input:
 	tuple val(meta), path(fq1), path(fq2)

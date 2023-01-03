@@ -15,7 +15,7 @@ args <- commandArgs(trailingOnly = T)
 SS <- read.csv(args[1], colClasses = "character", na.strings = c("", "NA"), check.names = F)
 workflow <- args[2]
 
-cols <- c("read1", "read2", "lib_id", "cell_line", "antibody", "treatment", "replicate")
+cols <- c("R1", "R2", "SampleID", "Cell Line", "Antibody", "Treatment", "Replicate")
 
 if(workflow == "single"){
 	missing <- !(cols %in% colnames(SS))
@@ -41,7 +41,7 @@ if(workflow == "single"){
 }
 
 if(workflow == "group") {
-	cols <- append(cols, "group")
+	cols <- append(cols, c("group_norm", "group_avg"))
 	missing <- !(cols %in% colnames(SS))
 	if( any(missing) ) {
 
