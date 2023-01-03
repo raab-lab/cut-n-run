@@ -5,7 +5,7 @@ process sort {
       tag "${meta.id}"
       publishDir "${params.outdir}/bams/sorted", mode: "copy"
       publishDir "${params.outdir}/${meta.id}/aligned/"
-      module 'samtools/1.9'
+      module 'samtools/1.16'
 
       input:
       tuple val(meta), path(bam)
@@ -25,7 +25,7 @@ process filter {
 	tag "${meta.id}"
 	publishDir "${params.outdir}/bams/filtered", mode: "copy"
 	publishDir "${params.outdir}/${meta.id}/aligned/"
-	module 'samtools/1.9'
+	module 'samtools/1.16'
 
 	when:
 	!params.skip_filter
