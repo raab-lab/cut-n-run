@@ -9,6 +9,7 @@
 #SBATCH -J NF
 
 module add nextflow
+module add anaconda
 
 ## MODIFY THE SAMPLESHEET AND EMAIL FOR YOUR RUN
 nextflow run raab-lab/cut-n-run \

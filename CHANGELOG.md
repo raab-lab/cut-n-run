@@ -3,6 +3,20 @@ raab-lab/cut-n-run: Changelog
 
 The format of this changelog is based on the [nf-core](https://github.com/nf-core/rnaseq/blob/master/CHANGELOG.md) changelog.
 
+## [2.3.1] - 2022-02-22
+
+### Updates
+
+This small release adds an option to use the `-profiles` parameter. Profiles allow you to set a group of variables all at once.
+The implemented profiles specifically simplify changing species specific parameters (mm10 vs hg38). See docs for usage.
+
+### Parameters
+
+| Old parameters         | New parameters         |
+| ---------------------- | ---------------------- |
+|                        | `-profile`	          |
+
+
 ## [2.3] - 2022-09-30
 
 ### Updates

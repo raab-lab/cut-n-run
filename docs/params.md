@@ -85,6 +85,11 @@ Flag to skip filtering of low quality alignments [Default: false]
 
 Only include alignments with MAPQ >= <numeric> [Default: 10]
 
+`-profile`
+
+Sets species specific variables. Either 'hg38' or 'mm10'.
+The default pipeline parameters correspond to `-profile hg38`
+
 `-latest`
 
 Flag to pull the latest pipeline release from GitHub

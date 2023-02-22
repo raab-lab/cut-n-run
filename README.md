@@ -37,6 +37,10 @@ Components
 Usage
 =====
 
+To see example usage and available parameters, run:
+
+    nextflow run raab-lab/cut-n-run --help
+
 Getting Nextflow
 ----------------
 
