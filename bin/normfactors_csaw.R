@@ -60,10 +60,10 @@ param <- readParam(pe = readType,
 
 if (args$peaks) {
   message("Computing efficiency (peak) normalization factors")
-  wc <- windowCounts(bamfiles, 
+  wc <- windowCounts(bamFiles, 
                      width = winSize, 
                      param = param)
-  background <- windowCounts(bamfiles, 
+  background <- windowCounts(bamFiles, 
                              bin = TRUE, 
                              width = binSize, 
                              param = param) 
