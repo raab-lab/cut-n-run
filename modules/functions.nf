@@ -41,6 +41,12 @@ def helpMessage() {
 	--bt2_index </path/>
 		Path to Bowtie2 index [Default:/proj/seq/data/hg38_UCSC/Sequence/Bowtie2Index/]
 
+	--macs_qvalue <numeric>
+		q-value cutoff for narrow peak calling [Default: 0.05]
+
+	--broad <numeric>
+		Flag for broad peak calling, must include a cutoff value [Default: off]
+
 	--genomeSize <numeric>
 		Effective genome size for MACS2 and bamCoverage (see docs for more info) [Default: 2701495761]
 

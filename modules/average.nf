@@ -4,8 +4,9 @@ process average {
 	tag "Group $group_avg"
 	publishDir "${params.outdir}/bw", mode: 'copy'
 
-	conda 'bioconda::wiggletools'
 	module 'ucsctools/320'
+	module 'anaconda'
+	conda 'bioconda::wiggletools'
 
 	cpus 4
 	memory '16G'

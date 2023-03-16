@@ -3,7 +3,21 @@ raab-lab/cut-n-run: Changelog
 
 The format of this changelog is based on the [nf-core](https://github.com/nf-core/rnaseq/blob/master/CHANGELOG.md) changelog.
 
-## [2.3.1] - 2022-02-22
+## [2.4] - 2023-03-16
+
+### Updates
+
+This release adds extra macs2 parameters. There is now an option for broad peak calling and
+for modifying the p-value (technically q-value) for macs for what peaks end up in the file.
+
+### Parameters
+
+| Old parameters         | New parameters         |
+| ---------------------- | ---------------------- |
+|                        | `--broad`	          |
+|                        | `--macs_qvalue`       |
+
+## [2.3.1] - 2023-02-22
 
 ### Updates
 
