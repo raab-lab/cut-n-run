@@ -3,6 +3,10 @@ raab-lab/cut-n-run: Changelog
 
 The format of this changelog is based on the [nf-core](https://github.com/nf-core/rnaseq/blob/master/CHANGELOG.md) changelog.
 
+## [2.4.1] - 2023-04-27
+
+Updates to latest trim galore module on longleaf to fix missing cutadapt error.
+
 ## [2.4] - 2023-03-16
 
 ### Updates
