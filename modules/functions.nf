@@ -41,6 +41,12 @@ def helpMessage() {
 	--bt2_index </path/>
 		Path to Bowtie2 index [Default:/proj/seq/data/hg38_UCSC/Sequence/Bowtie2Index/]
 
+	--macs_qvalue <numeric>
+		q-value cutoff for narrow peak calling [Default: 0.05]
+
+	--broad <numeric>
+		Flag for broad peak calling, must include a cutoff value [Default: off]
+
 	--genomeSize <numeric>
 		Effective genome size for MACS2 and bamCoverage (see docs for more info) [Default: 2701495761]
 
@@ -57,6 +63,9 @@ def helpMessage() {
 		Only include alignments with MAPQ >= <numeric>
 
 	\033[1;34mArguments to Always Include\033[0m:
+	-profile <hg38 or mm10>
+		Sets species specific variables [Default: hg38]
+
 	-latest
 		Flag to pull the latest pipeline release from GitHub
 

@@ -77,6 +77,14 @@ See https://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/fetchChromSizes
 
 Normalization method to use for scaling coverage tracks. Either 'bins' or 'peaks' [Default: bins]
 
+`--macs_qvalue` <value>
+
+Sets the q-value cutoff for macs `-q` parameter. [Default: 0.05]
+
+`--broad` <value>
+
+Turns on broad peak calling. Must also supply a p(q)-value cutoff for what peaks to include in output. If unset then narrow peak calling with `--call-summits -q $macs_qvalue` is used. [Default: false]
+
 `--skip_filter`
 
 Flag to skip filtering of low quality alignments [Default: false]
@@ -84,6 +92,11 @@ Flag to skip filtering of low quality alignments [Default: false]
 `--mapq <numeric>`
 
 Only include alignments with MAPQ >= <numeric> [Default: 10]
+
+`-profile`
+
+Sets species specific variables. Either 'hg38' or 'mm10'.
+The default pipeline parameters correspond to `-profile hg38`
 
 `-latest`
 

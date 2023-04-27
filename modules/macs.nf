@@ -13,11 +13,14 @@ process macs {
 	val genomeSize
 
 	output:
-	tuple val(meta), path("*.narrowPeak"), emit: peaks
+	tuple val(meta), path("*Peak"), emit: peaks
 	path "*_peaks.xls", emit: stats
 
 	script:
+
+	def peakSize = params.broad ? "--broad --broad-cutoff $params.broad" : "--call-summits -q ${params.macs_qvalue}"
+
 	"""
-	macs2 callpeak -t ${bam} -n ${meta.id} -f BAMPE -g $genomeSize --call-summits -q 0.01
+	macs2 callpeak -t ${bam} -n ${meta.id} -f BAMPE -g $genomeSize $peakSize
 	"""
 }

@@ -5,7 +5,7 @@
 process trim {
    tag "${meta.id}"
    label 'trim'
-   module 'trim_galore/0.6.2'
+   module 'trim_galore/0.6.7'
    module 'fastqc'
 
    publishDir "${params.outdir}/${meta.id}/qc"
