@@ -19,7 +19,7 @@ process trim {
 
    script:
    """
-   trim_galore -j ${task.cpus} --fastqc --paired --gzip ${fastq1} ${fastq2}
+   trim_galore -j ${task.cpus} --fastqc --paired --gzip --basename ${meta.id} ${fastq1} ${fastq2}
    """
 }
 
