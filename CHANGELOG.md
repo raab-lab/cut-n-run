@@ -3,6 +3,20 @@ raab-lab/cut-n-run: Changelog
 
 The format of this changelog is based on the [nf-core](https://github.com/nf-core/rnaseq/blob/master/CHANGELOG.md) changelog.
 
+## [3.0] - 2023-09-06
+
+:exclamation: Major Release
+
+This release bumps several tool versions and introduces some changes.
+
+### Updates
+
+- The samplesheet now includes a new column called SampleNumber (see [docs](docs/params.md) for example)
+- Bumped to pyairtable to version 2.1.0.post1 and refactored airtable scripts to accomodate
+- Airtable is deprecating API keys, so code was refactored to take personal access tokens
+- Bumped the nextflow version to the latest on longleaf,
+which fixed the conda error when trying to average bigWigs with wiggletools
+
 ## [2.4.1] - 2023-04-27
 
 Updates to latest trim galore module on longleaf to fix missing cutadapt error.
@@ -19,7 +33,7 @@ for modifying the p-value (technically q-value) for macs for what peaks end up i
 | Old parameters         | New parameters         |
 | ---------------------- | ---------------------- |
 |                        | `--broad`	          |
-|                        | `--macs_qvalue`       |
+|                        | `--macs_qvalue`        |
 
 ## [2.3.1] - 2023-02-22
 

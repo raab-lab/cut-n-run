@@ -13,6 +13,7 @@ module add nextflow
 ## MODIFY THE SAMPLESHEET AND EMAIL FOR YOUR RUN
 nextflow run raab-lab/cut-n-run \
 		--sample_sheet /path/to/samplesheet \
+		-profile mm10/hg38 \
 		-w /path/to/work \
 		--outdir /path/to/Output \
 		-with-report \

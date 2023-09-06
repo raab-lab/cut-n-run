@@ -20,6 +20,7 @@ include { multiqc }				from '../modules/multiqc'
 
 def parse_samplesheet(LinkedHashMap row){
 	def meta = [:]
+	meta.sampleNum	= row.SampleNumber
 	meta.id		= row.ID
 	meta.lib_id	= row.SampleID
 	meta.cell_line	= row["Cell Line"]

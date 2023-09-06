@@ -15,9 +15,12 @@ args <- commandArgs(trailingOnly = T)
 SS <- read.csv(args[1], colClasses = "character", na.strings = c("", "NA"), check.names = F)
 workflow <- args[2]
 
-cols <- c("R1", "R2", "SampleID", "Cell Line", "Antibody", "Treatment", "Replicate")
+cols <- c("R1", "R2", "SampleNumber", "SampleID", "Cell Line", "Antibody", "Treatment", "Replicate")
 
 if(workflow == "single"){
+	if( !("SampleNumber" %in% colnames(SS)) ) {
+		SS$SampleNumber <- seq_along(nrow(SS))
+	}
 	missing <- !(cols %in% colnames(SS))
 	if( any(missing) ) {
 
@@ -26,7 +29,7 @@ if(workflow == "single"){
 
 	} else {
 
-		SS$ID <- apply(SS[cols[-c(1,2)]], 1, function(x) paste(x[!is.na(x)], collapse = "_"))
+		SS$ID <- apply(SS[cols[-c(1,2,3)]], 1, function(x) paste(x[!is.na(x)], collapse = "_"))
 		dup <- duplicated(SS$ID)
 		if(any(dup)) {
 
@@ -34,6 +37,7 @@ if(workflow == "single"){
 
 		} else {
 
+			SS$ID <- paste0(SS$SampleNumber, "_", SS$ID)
 			write.csv(SS, "samplesheet_uniqID.csv", quote = F, row.names = F)
 
 		}
@@ -42,6 +46,9 @@ if(workflow == "single"){
 
 if(workflow == "group") {
 	cols <- append(cols, c("group_norm", "group_avg"))
+	if( !("SampleNumber" %in% colnames(SS)) ) {
+		SS$SampleNumber <- seq_along(nrow(SS))
+	}
 	missing <- !(cols %in% colnames(SS))
 	if( any(missing) ) {
 
@@ -50,7 +57,7 @@ if(workflow == "group") {
 
 	} else {
 
-		SS$ID <- apply(SS[cols[-c(1,2)]], 1, function(x) paste(x[!is.na(x)], collapse = "_"))
+		SS$ID <- apply(SS[cols[-c(1,2,3)]], 1, function(x) paste(x[!is.na(x)], collapse = "_"))
 		dup <- duplicated(SS$ID)
 		if(any(dup)) {
 
@@ -58,6 +65,7 @@ if(workflow == "group") {
 
 		} else {
 
+			SS$ID <- paste0(SS$SampleNumber, "_", SS$ID)
 			write.csv(SS, "samplesheet_uniqID.csv", quote = F, row.names = F)
 
 		}
