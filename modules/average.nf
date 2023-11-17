@@ -5,7 +5,7 @@ process average {
 	publishDir "${params.outdir}/bw", mode: 'copy'
 
 	module 'ucsctools/320'
-	module 'anaconda'
+	module 'anaconda/2023.03'
 	conda 'bioconda::wiggletools'
 
 	cpus 4

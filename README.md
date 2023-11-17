@@ -99,15 +99,15 @@ Airtable
 This pipeline interfaces with the Raab Lab airtable. We use [pyairtable](https://pyairtable.readthedocs.io/en/latest/) to interact with the Airtable API. Install it with:
 
     module load python/3.8.8
-    pip install --user pyairtable
+    pip install --user pyairtable==2.1.0.post1
 
-Next, go to your account page and copy your personal API key (you made need to generate it first). Then go to Longleaf and create a file called `.secrets/airtable` in your home directory (you will need to create the .secrets folder if you don't have one):
+Next, go to your account page and copy your personal authentication token (PAT) (you made need to generate it first). Then go to Longleaf and create a file called `.secrets/airtable` in your home directory (you will need to create the .secrets folder if you don't have one):
 
     vim ~/.secrets/airtable
 
 Add this line to the file:
 
-    export AIRTABLE_API_KEY=<YOUR_API_KEY>
+    export AIRTABLE_PAT=<YOUR_PAT>
 
 Save the file and then run:
 
