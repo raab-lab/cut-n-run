@@ -4,9 +4,8 @@ process average {
 	tag "Group $group_avg"
 	publishDir "${params.outdir}/bw", mode: 'copy'
 
+	//container 'ensemblorg/wiggletools:latest'
 	module 'ucsctools/320'
-	module 'anaconda/2023.03'
-	conda 'bioconda::wiggletools'
 
 	cpus 4
 	memory '16G'
@@ -21,7 +20,8 @@ process average {
 
 	script:
 	"""
-	wiggletools mean ${bws} |\\
+	singularity exec -B /work docker://ensemblorg/wiggletools:latest \\
+		wiggletools mean ${bws} |\\
 		awk '\$1 ~ /^chr[XY0-9]+\$/' |\\
 		wigToBigWig stdin ${chrom_sizes} group${group_avg}_mean.bw
 	"""

@@ -3,6 +3,22 @@ raab-lab/cut-n-run: Changelog
 
 The format of this changelog is based on the [nf-core](https://github.com/nf-core/rnaseq/blob/master/CHANGELOG.md) changelog.
 
+## [3.2] - 2024-02-01
+
+### Updates
+
+- Adds a column for the unscaled norm factor in the CSAW output.
+
+## [3.1] - 2023-11-20
+
+I thought the last release fixed the wiggletools error but I guess not :weary:.
+This one should do it. For real this time.
+
+### Updates
+
+- Runs `wiggletools mean` in a singularity container. Using `exec`, this conveniently outputs the results to stdout
+which is then parsed and converted to bigWig format using the `ucsctools` module. No more conda.
+
 ## [3.0] - 2023-09-06
 
 :exclamation: Major Release

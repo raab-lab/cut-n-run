@@ -2,7 +2,7 @@
 doc <- 'calculate_normfactors_csaw.R
 
 Usage: 
-  calculate_normfactors_csaw.R (--bins| --peaks) [--winSize=<winsize> --binSize=<binsize> --threshold=<threshold> --keepdup --pe=<pe> --maxFrag=<maxFrag>] <OUTPUT> <FILES>... 
+  calculate_normfactors_csaw.R (--bins| --peaks) [--winSize=<winsize> --binSize=<binsize> --threshold=<threshold> --keepdup --pe=<pe> --maxFrag=<maxFrag> --exclusion=<exclusion.bed>] <OUTPUT> <FILES>... 
   calculate_normfactors_csaw.R (-h | --help)
 
 Options: 
@@ -15,6 +15,7 @@ Options:
   --keepdup                     flag for readParam object to keep marked duplicates
   --pe=both                     flag for readParam object to set paired read. One of both, none, first, or second [default: both]
   --maxFrag=val                 flag for readParam object to set maximum fragment size [default: 500]
+  --exclusion=val		            Location of exclusion list in bed format [default: /proj/jraablab/users/pkuhlers/seq_resources/hg38_cnr_exclusion.bed]
 ' 
 ################################################################################
 #  METHOD: one of 'peaks' or 'bins'
@@ -52,11 +53,13 @@ threshold <- as.numeric(args$threshold)
 maxFrag <- as.numeric(args$maxFrag)
 readType <- args$pe
 dedup <- !args$keepdup
+exclusion <- rtracklayer::import.bed(args$exclusion)
 
 # Read in params
 param <- readParam(pe = readType, 
                    max.frag = maxFrag,
-                   dedup = dedup)
+                   dedup = dedup,
+                   discard = exclusion)
 
 if (args$peaks) {
   message("Computing efficiency (peak) normalization factors")
@@ -91,7 +94,7 @@ if (args$bins) {
 
 bai <- gsub("[.]bam", ".bai", bam)
 id <- gsub("_sorted_markdup.bam", "", basename(bam))
-nf_out <- data.frame(id = id, bam = bam, bai = bai, scale_factors = scale_factors)
+nf_out <- data.frame(id = id, bam = bam, bai = bai, total_reads = totals, norm_factors = nf, scale_factors = scale_factors)
 write.table(nf_out, file = args$OUTPUT, row.names = F, col.names = T, sep = ',', quote = F)
 
 
