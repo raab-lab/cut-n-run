@@ -17,13 +17,17 @@ Path to the experiment samplesheet in csv format. It should be formatted as foll
 |Antibody	|Antibody used					|
 |Treatment	|Treatment or experimental conditions		|
 |Replicate	|Experimental replicate number			|
-|group_norm	|Scale factor normalization group (optional)	|
-|group_avg	|BigWig Averaging group (optional)		|
+|group_norm	|Scale factor normalization group (Run 2)	|
+|group_avg	|BigWig Averaging group (Run 2)			|
+|params		|CSAW normalization parameters (Run 2)		|
 
 Example:
 
-    R1,R2,SampleNumber,SampleID,Cell Line,Antibody,Treatment,Replicate
-    /path/to/R1,/path/to/R2,626,UniqID,HepG2,ARID1A,Sorafenib,1
+    R1,R2,SampleNumber,SampleID,Cell Line,Antibody,Treatment,Replicate,group_norm,group_avg,params
+    /path/to/R1,/path/to/R2,626,UniqID,HepG2,ARID1A,Sorafenib,1,ARID1A,Sorafenib,--peaks --winSize 100
+    /path/to/R1,/path/to/R2,627,UniqID,HepG2,ARID1A,Sorafenib,2,ARID1A,Sorafenib,--peaks --winSize 100
+    /path/to/R1,/path/to/R2,628,UniqID,HepG2,ARID1A,Vehicle,1,ARID1A,Vehicle,--peaks --winSize 100
+    /path/to/R1,/path/to/R2,629,UniqID,HepG2,ARID1A,Vehicle,2,ARID1A,Vehicle,--peaks --winSize 100
 
 `--help`
 
@@ -73,10 +77,6 @@ Genome to pull chromosome sizes from UCSC [Default: hg38]
 The module uses the script fetchChromSizes provided by UCSC,
 so only UCSC genome names are allowed i.e. hg38, mm10, etc.
 See https://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/fetchChromSizes
-
-`--norm_method` <value>
-
-Normalization method to use for scaling coverage tracks. Either 'bins' or 'peaks' [Default: bins]
 
 `--macs_qvalue` <value>
 

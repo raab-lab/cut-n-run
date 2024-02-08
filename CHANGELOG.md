@@ -3,6 +3,21 @@ raab-lab/cut-n-run: Changelog
 
 The format of this changelog is based on the [nf-core](https://github.com/nf-core/rnaseq/blob/master/CHANGELOG.md) changelog.
 
+## [4.0] - 2024-02-08
+
+:exclamation: Major Release
+
+This release introduces changes to the sample sheet and changes the way normalization happens
+
+### Updates
+
+- The samplesheet now includes a new column called `params` (see [docs](docs/params.md)).
+- Deprecated --norm_method parameter in favor of adding normalization parameters to the samplesheet.
+
+| Old parameters         | New parameters         |
+| ---------------------- | ---------------------- |
+| `--norm_method`        | 		          |
+
 ## [3.2] - 2024-02-01
 
 ### Updates

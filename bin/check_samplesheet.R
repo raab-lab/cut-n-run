@@ -43,9 +43,9 @@ if(workflow == "single"){
 		}
 	}
 }
-
+## TODO add PARAMS COLUMN
 if(workflow == "group") {
-	cols <- append(cols, c("group_norm", "group_avg"))
+	cols <- append(cols, c("group_norm", "group_avg", "params"))
 	if( !("SampleNumber" %in% colnames(SS)) ) {
 		SS$SampleNumber <- seq_along(nrow(SS))
 	}

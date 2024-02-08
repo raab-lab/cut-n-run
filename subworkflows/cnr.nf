@@ -33,6 +33,9 @@ def parse_samplesheet(LinkedHashMap row){
 	if(row.containsKey('group_avg')) {
 		meta.group_avg = row.group_avg
 	}
+	if(row.containsKey('params')) {
+		meta.norm_params = row.params
+	}
 
 	def array = [meta, file(row.R1), file(row.R2) ]
 
