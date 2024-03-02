@@ -5,7 +5,7 @@
 process trim {
    tag "${meta.id}"
    label 'trim'
-   module 'trim_galore/0.6.2'
+   module 'trim_galore/0.6.7'
    module 'fastqc'
 
    publishDir "${params.outdir}/${meta.id}/qc"
@@ -19,7 +19,7 @@ process trim {
 
    script:
    """
-   trim_galore -j ${task.cpus} --fastqc --paired --gzip ${fastq1} ${fastq2}
+   trim_galore -j ${task.cpus} --fastqc --paired --gzip --basename ${meta.id} ${fastq1} ${fastq2}
    """
 }
 

@@ -6,17 +6,22 @@ process macs {
 	tag "$meta.id"
 	publishDir "${params.outdir}/peaks/", mode: "copy"
 	publishDir "${params.outdir}/${meta.id}/peaks"
-	module 'macs/2.2.7.1'
+//	module 'macs/2.2.7.1'
 
 	input:
 	tuple val(meta), path(bam), path(bai)
+	val genomeSize
 
 	output:
-	tuple val(meta), path("*.narrowPeak"), emit: peaks
+	tuple val(meta), path("*Peak"), emit: peaks
 	path "*_peaks.xls", emit: stats
 
 	script:
+
+	def peakSize = params.broad ? "--broad --broad-cutoff $params.broad" : "--call-summits -q ${params.macs_qvalue}"
+
 	"""
-	macs2 callpeak -t ${bam} -n ${meta.id} -f BAMPE -g hs --call-summits -q 0.01
+	module load macs/2.1.2
+	macs2 callpeak -t ${bam} -n ${meta.id} -f BAMPE -g $genomeSize $peakSize
 	"""
 }
