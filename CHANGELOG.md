@@ -3,6 +3,20 @@ raab-lab/cut-n-run: Changelog
 
 The format of this changelog is based on the [nf-core](https://github.com/nf-core/rnaseq/blob/master/CHANGELOG.md) changelog.
 
+## [4.1] - 2024-07-25
+
+### Updates
+
+- This release deprecates the atac-seq pipeline in favor of running cut&run in 'ATAC' mode.
+
+### Parameters
+
+| Old parameters         | New parameters         |
+| ---------------------- | ---------------------- |
+|                        | `--mode`	          |
+|                        | `--exclusionList`      |
+
+
 ## [4.0] - 2024-02-08
 
 :exclamation: Major Release

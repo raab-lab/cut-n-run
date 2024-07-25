@@ -77,7 +77,7 @@ workflow CNR {
 		bam = sort.out
 
 	} else {
-		filter(sort.out, params.mapq)
+		filter(sort.out, params.mapq, params.mode)
 		bam = filter.out
 	}
 

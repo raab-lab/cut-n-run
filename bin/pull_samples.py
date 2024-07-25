@@ -10,7 +10,7 @@ from pyairtable.formulas import match
 field_names = ['SampleNumber', 'R1', 'R2', 'SampleID', 'Cell Line', 'Antibody', 'Treatment', 'Replicate']
 
 ## COMMAND ARGS
-EXP_TYPE    = sys.argv[1]
+EXP_TYPE    = [sys.argv[1], 'ATAC-Seq']
 EXP_ID      = sys.argv[2]
 
 ## TABLE DEFINITIONS
@@ -26,9 +26,8 @@ samp_tbl = api.table(base_id, samp_tbl_id)
 
 exp = exp_tbl.all(formula=match({"Name": EXP_ID}), fields = ["fldoakwuQUYDqWyaC", "fldcplZEsa9zDyTTp"])[0]
 
-if(exp['fields']['Experiment Type'] != EXP_TYPE):
-    sys.exit("Incorrect experiment type for pipeline. Experiment must be " + EXP_TYPE)
-
+if (exp['fields']['Experiment Type'] not in EXP_TYPE):
+    sys.exit("Incorrect experiment type for pipeline. Experiment must be " + " or ".join(EXP_TYPE))
 else:
     samples = samp_tbl.all(formula=match({"Experiment ID": EXP_ID }))
     with open("samplesheet.csv", 'w', newline='') as csvf:

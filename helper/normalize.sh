@@ -14,6 +14,7 @@ module add nextflow
 ## MODIFY THE SAMPLESHEET AND EMAIL FOR YOUR RUN
 nextflow run raab-lab/cut-n-run \
 		--sample_sheet /path/to/samplesheet \
+		--mode cnr/atac \
 		--group_normalize \
 		-profile mm10/hg38 \
 		-w /path/to/work \

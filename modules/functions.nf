@@ -38,6 +38,12 @@ def helpMessage() {
 		Path to your desired output directory [Default: Output]
 
 	\033[1;34mTool Options\033[0m:
+	--mode <value>
+		'cnr' or 'atac'. 'atac' adds mitochondrial read filtering and exclusion list filtering [Default: cnr]
+
+	--exclusionList </path/>
+		Path to ATACseq exclusion list [Default:/proj/jraablab/users/pkuhlers/seq_resources/hg38-exclusion.v3.bed]
+
 	--bt2_index </path/>
 		Path to Bowtie2 index [Default:/proj/seq/data/hg38_UCSC/Sequence/Bowtie2Index/]
 

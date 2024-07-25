@@ -17,6 +17,7 @@ params.new_experiment		= ''
 params.pull_samples		= ''
 params.group_normalize		= ''
 params.help			= false
+params.mode			= 'cnr'
 
 // import subworkflows
 
