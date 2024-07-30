@@ -1,5 +1,5 @@
 process check_ss{
-	module 'r/4.1.0'
+	module 'r/4.4.0'
 	label 'single'
 	tag "Samplesheet"
 
