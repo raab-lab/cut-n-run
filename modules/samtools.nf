@@ -26,7 +26,7 @@ process filter {
 	publishDir "${params.outdir}/bams/filtered", mode: "copy"
 	publishDir "${params.outdir}/${meta.id}/aligned/"
 	module 'bedtools/2.30'
-	module 'samtools/1.16'
+	module 'samtools/1.20'
 
 	when:
 	!params.skip_filter
