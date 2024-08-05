@@ -2,7 +2,7 @@
 // TODO: Parse the params column and pass it here
 process normalize {
 	tag "$meta.group_norm"
-	module 'r/4.1.0'
+	module 'r/4.3.1'
 	cache 'lenient'
 
 	memory { 8.GB * task.attempt }
