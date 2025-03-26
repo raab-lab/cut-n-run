@@ -1,7 +1,7 @@
 // Compute coverage
 
 process coverage {
-	module 'deeptools/3.2.0'
+	module 'deeptools/3.5.4'
 	tag "${meta.id}"
 	cpus 16
 	memory { 24.GB * task.attempt }
