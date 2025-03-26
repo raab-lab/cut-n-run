@@ -3,8 +3,8 @@
 process coverage {
 	module 'deeptools/3.2.0'
 	tag "${meta.id}"
-	cpus 8
-	memory { 16.GB * task.attempt }
+	cpus 16
+	memory { 24.GB * task.attempt }
 	time { 24.h * task.attempt }
 
 	publishDir "${params.outdir}/bw", mode: "copy"
