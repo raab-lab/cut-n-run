@@ -71,6 +71,10 @@ Path to your desired output directory [Default: Output]
 
 Path to Bowtie2 index [Default:/proj/seq/data/hg38_UCSC/Sequence/Bowtie2Index/]
 
+`--bt2_cores <numeric>`
+
+Number of cores used for alignment [Default: 8]
+
 `--genomeSize <numeric>`
 
 Effective genome size for MACS2 and bamCoverage [Default: 2701495761]

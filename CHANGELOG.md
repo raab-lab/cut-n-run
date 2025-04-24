@@ -3,6 +3,18 @@ raab-lab/cut-n-run: Changelog
 
 The format of this changelog is based on the [nf-core](https://github.com/nf-core/rnaseq/blob/master/CHANGELOG.md) changelog.
 
+## [4.1.1] - 2025-04-24
+
+### Updates
+
+- This release adds a parameter for setting the number of cores used for bowtie2
+
+### Parameters
+
+| Old parameters         | New parameters         |
+| ---------------------- | ---------------------- |
+|                        | `--bt2_cores`          |
+
 ## [4.1] - 2024-07-25
 
 ### Updates
