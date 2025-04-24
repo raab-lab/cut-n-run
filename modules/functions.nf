@@ -47,6 +47,9 @@ def helpMessage() {
 	--bt2_index </path/>
 		Path to Bowtie2 index [Default:/proj/seq/data/hg38_UCSC/Sequence/Bowtie2Index/]
 
+	--bt2_cores <numeric>
+		Number of cores used for alignment [Default: 8]
+
 	--macs_qvalue <numeric>
 		q-value cutoff for narrow peak calling [Default: 0.05]
 
