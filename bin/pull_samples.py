@@ -7,7 +7,7 @@ from pyairtable import Api
 from pyairtable.formulas import match
 
 ## FIELD NAMES
-field_names = ['SampleNumber', 'R1', 'R2', 'SampleID', 'Cell Line', 'Antibody', 'Treatment', 'Replicate']
+field_names = ['SampleNumber', 'R1', 'R2', 'SampleID', 'Cell Line', 'Genotype', 'Antibody', 'Treatment', 'Replicate', 'Notes']
 
 ## COMMAND ARGS
 EXP_TYPE    = [sys.argv[1], 'ATAC-Seq']

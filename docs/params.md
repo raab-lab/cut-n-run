@@ -14,6 +14,7 @@ Path to the experiment samplesheet in csv format. It should be formatted as foll
 |SampleNumber	|Immutable SampleNumber (Airtable)	  	|
 |SampleID	|Unique sequencing library ID		   	|
 |Cell Line	|Cell line identifier (i.e. HepG2)		|
+|Genotype	|Genotype (i.e. R1064K)				|
 |Antibody	|Antibody used					|
 |Treatment	|Treatment or experimental conditions		|
 |Replicate	|Experimental replicate number			|

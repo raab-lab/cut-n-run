@@ -25,6 +25,7 @@ def parse_samplesheet(LinkedHashMap row){
 	meta.lib_id	= row.SampleID
 	meta.cell_line	= row["Cell Line"]
 	meta.ab		= row.Antibody
+	meta.geno	= row.Genotype
 	meta.trt	= row.Treatment
 	meta.rep	= row.Replicate
 	if(row.containsKey('group_norm')) {
