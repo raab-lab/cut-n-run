@@ -8,7 +8,7 @@ process bt2 {
 	publishDir "${params.outdir}/bams", mode: "copy"
 	publishDir "${params.outdir}/${meta.id}/aligned/"
 
-	module 'bowtie2/2.5,4'
+	module 'bowtie2/2.5.4'
 	module 'samtools/1.22'
 
 	input:
