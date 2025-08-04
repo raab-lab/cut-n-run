@@ -21,7 +21,7 @@ process macs {
 	def peakSize = params.broad ? "--broad --broad-cutoff $params.broad" : "--call-summits -q ${params.macs_qvalue}"
 
 	"""
-	module load macs/2.1.2
+	module load macs/2.2.9.1
 	macs2 callpeak -t ${bam} -n ${meta.id} -f BAMPE -g $genomeSize $peakSize
 	"""
 }
