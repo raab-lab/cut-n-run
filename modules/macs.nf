@@ -6,7 +6,7 @@ process macs {
 	tag "$meta.id"
 	publishDir "${params.outdir}/peaks/", mode: "copy"
 	publishDir "${params.outdir}/${meta.id}/peaks"
-//	module 'macs/2.2.7.1'
+//	module 'macs/2.2.9.1'
 
 	input:
 	tuple val(meta), path(bam), path(bai)
