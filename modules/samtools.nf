@@ -5,7 +5,7 @@ process sort {
       tag "${meta.id}"
       publishDir "${params.outdir}/bams/sorted", mode: "copy"
       publishDir "${params.outdir}/${meta.id}/aligned/"
-      module 'samtools/1.20'
+      module 'samtools/1.22'
 
       input:
       tuple val(meta), path(bam)
