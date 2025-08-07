@@ -18,8 +18,7 @@ process mspc {
 	def mspc_args = params.mspc_args ?: ""
 	def weak_threshold = params.mspc_weak ?: 0.0001
 	def strong_threshold = params.mspc_strong ?: 1e-08
-	def gamma = params.mspc_gamma ?: 1e-12
-	def score_cutoff = params.mspc_score_cutoff ?: 30
+	def gamma = params.mspc_gamma ?: 1e-8
 	def min_overlap = params.mspc_min_overlap ?: 1
 
 	"""
@@ -28,7 +27,7 @@ process mspc {
 		# Extract sample name from peak file
 		sample_name=\$(basename \$peak_file | sed 's/_peaks.narrowPeak//')
 		# Convert narrowPeak to BED format (first 4 columns: chr, start, end, name)
-		awk 'OFS="\\t" {print \$1, \$2, \$3, \$4, \$9}' \$peak_file > \${sample_name}.bed
+		awk 'OFS="\\t" {print \$1, \$2, \$3, \$4, \$3}' \$peak_file > \${sample_name}.bed
 	done
 
 	# Need to have MSPC downloaded and able to run
