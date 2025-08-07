@@ -16,6 +16,8 @@ params.create_samplesheet 	= ''
 params.new_experiment		= ''
 params.pull_samples		= ''
 params.group_normalize		= ''
+params.call_consensus_peaks	= false
+params.mspc_args		= ''
 params.help			= false
 params.mode			= 'cnr'
 
