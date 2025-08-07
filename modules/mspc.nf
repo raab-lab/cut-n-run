@@ -28,18 +28,12 @@ process mspc {
 		# Extract sample name from peak file
 		sample_name=\$(basename \$peak_file | sed 's/_peaks.narrowPeak//')
 		# Convert narrowPeak to BED format (first 4 columns: chr, start, end, name)
-		awk 'OFS="\\t" {print \$1, \$2, \$3, \$4"_"\$10}' \$peak_file > \${sample_name}.bed
+		awk 'OFS="\\t" {print \$1, \$2, \$3, \$4, \$9}' \$peak_file > \${sample_name}.bed
 	done
 
-	# Download MSPC if not available
-	if ! command -v mspc &> /dev/null; then
-		wget -q https://github.com/Genometric/MSPC/releases/download/v5.2.3/MSPC-v5.2.3-linux-x64.zip
-		unzip -q MSPC-v5.2.3-linux-x64.zip
-		chmod +x mspc
-		MSPC_CMD="./mspc"
-	else
-		MSPC_CMD="mspc"
-	fi
+	# Need to have MSPC downloaded and able to run
+	MSPC_CMD="mspc"
+	
 
 	# Run MSPC with parameters
 	\$MSPC_CMD -i *.bed \\
