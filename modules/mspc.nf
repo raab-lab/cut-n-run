@@ -47,7 +47,6 @@ process mspc {
 		-w $weak_threshold \\
 		-s $strong_threshold \\
 		-g $gamma \\
-		--score_cutoff $score_cutoff \\
 		-c $min_overlap \\
 		$mspc_args
 
