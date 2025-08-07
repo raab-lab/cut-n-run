@@ -1,9 +1,14 @@
 // Compute coverage normalization factors
-
+// TODO: Parse the params column and pass it here
 process normalize {
 	tag "$meta.group_norm"
-	module 'r/4.1.0'
+	module 'r/4.4.0'
 	cache 'lenient'
+
+	memory { 12.GB * task.attempt }
+	errorStrategy { task.exitStatus == 137 ? 'retry' : 'finish' }
+	maxRetries 3
+
 	publishDir "${params.outdir}/norm_factors/", mode: 'copy'
 
 	input:
@@ -15,6 +20,6 @@ process normalize {
 
 	script:
 	"""
-	normfactors_csaw.R --${params.norm_method} ${group}_norm_factors.csv $bams
+	normfactors_csaw.R ${meta.norm_params[0]} ${group}_norm_factors.csv $bams
 	"""
 }

@@ -25,6 +25,7 @@ def parse_samplesheet(LinkedHashMap row){
 	meta.lib_id	= row.SampleID
 	meta.cell_line	= row["Cell Line"]
 	meta.ab		= row.Antibody
+	meta.geno	= row.Genotype
 	meta.trt	= row.Treatment
 	meta.rep	= row.Replicate
 	if(row.containsKey('group_norm')) {
@@ -32,6 +33,9 @@ def parse_samplesheet(LinkedHashMap row){
 	}
 	if(row.containsKey('group_avg')) {
 		meta.group_avg = row.group_avg
+	}
+	if(row.containsKey('params')) {
+		meta.norm_params = row.params
 	}
 
 	def array = [meta, file(row.R1), file(row.R2) ]
@@ -74,7 +78,7 @@ workflow CNR {
 		bam = sort.out
 
 	} else {
-		filter(sort.out, params.mapq)
+		filter(sort.out, params.mapq, params.mode)
 		bam = filter.out
 	}
 

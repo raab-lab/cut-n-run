@@ -2,14 +2,14 @@
 
 process bt2 {
 	tag "$meta.id"
-	cpus 8
+	cpus "${params.bt2_cores}"
 	memory '8GB'
 	time '24h'
 	publishDir "${params.outdir}/bams", mode: "copy"
 	publishDir "${params.outdir}/${meta.id}/aligned/"
 
-	module 'bowtie2/2.3.4.1'
-	module 'samtools/1.16'
+	module 'bowtie2/2.5.4'
+	module 'samtools/1.22'
 
 	input:
 	tuple val(meta), path(fq1), path(fq2)

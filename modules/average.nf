@@ -22,7 +22,7 @@ process average {
 	"""
 	singularity exec -B /work docker://ensemblorg/wiggletools:latest \\
 		wiggletools mean ${bws} |\\
-		awk '\$1 ~ /^chr[XY0-9]+\$/' |\\
+		awk '\$1 ~ /^chr[XY0-9IVX]+\$/' |\\
 		wigToBigWig stdin ${chrom_sizes} group${group_avg}_mean.bw
 	"""
 }

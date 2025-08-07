@@ -15,7 +15,7 @@ args <- commandArgs(trailingOnly = T)
 SS <- read.csv(args[1], colClasses = "character", na.strings = c("", "NA"), check.names = F)
 workflow <- args[2]
 
-cols <- c("R1", "R2", "SampleNumber", "SampleID", "Cell Line", "Antibody", "Treatment", "Replicate")
+cols <- c("R1", "R2", "SampleNumber", "SampleID", "Cell Line", 'Genotype', "Antibody", "Treatment", "Replicate")
 
 if(workflow == "single"){
 	if( !("SampleNumber" %in% colnames(SS)) ) {
@@ -43,9 +43,9 @@ if(workflow == "single"){
 		}
 	}
 }
-
+## TODO add PARAMS COLUMN
 if(workflow == "group") {
-	cols <- append(cols, c("group_norm", "group_avg"))
+	cols <- append(cols, c("group_norm", "group_avg", "params"))
 	if( !("SampleNumber" %in% colnames(SS)) ) {
 		SS$SampleNumber <- seq_along(nrow(SS))
 	}

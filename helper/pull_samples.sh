@@ -26,6 +26,7 @@ source ~/.secrets/airtable
 ## MODIFY THE EXPERIMENT ID, WORK, OUTPUT, AND EMAIL FOR YOUR RUN
 nextflow run raab-lab/cut-n-run \
 		--pull_samples EXPERIMENT ID \
+		--mode cnr/atac \
 		-profile mm10/hg38 \
 		-w /path/to/work \
 		--outdir /path/to/Output \

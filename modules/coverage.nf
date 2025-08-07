@@ -1,9 +1,12 @@
 // Compute coverage
 
 process coverage {
-	module 'deeptools/3.2.0'
-	label 'medium'
+	module 'deeptools/3.5.4'
 	tag "${meta.id}"
+	cpus 16
+	memory { 24.GB * task.attempt }
+	time { 24.h * task.attempt }
+
 	publishDir "${params.outdir}/bw", mode: "copy"
 	publishDir "${params.outdir}/${meta.id}/bw"
 

@@ -28,8 +28,8 @@ process trim {
 process picard_cis {
 	tag "${meta.id}"
 	label 'medium'
-	module 'picard/2.20.0'
-	module 'r/3.6.0'
+	module 'picard/2.26.11'
+	module 'r/4.4.0'
 
 	publishDir "${params.outdir}/${meta.id}/qc"
 
@@ -53,8 +53,8 @@ process picard_cis {
 process picard_md {
 	tag "$meta.id"
 	label "large"
-	module 'picard/2.20.0'
-	module 'r/3.6.0'
+	module 'picard/2.26.11'
+	module 'r/4.4.0'
 
 	publishDir "${params.outdir}/${meta.id}/qc"
 
