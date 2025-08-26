@@ -4,7 +4,7 @@ process pull_experiment {
 
 	tag "AT Experiment"
 	executor 'local'
-	module 'python/3.8.8'
+	module 'python/3.12.4'
 
 	input:
 	val exp_id
