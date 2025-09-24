@@ -1,5 +1,5 @@
 process multiqc {
-	module 'multiqc/1.11'
+	module 'multiqc/1.28'
 	cpus 2
 	memory '16G'
 	publishDir "${params.outdir}", mode: 'copy'
