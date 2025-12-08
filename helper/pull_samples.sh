@@ -9,12 +9,12 @@
 #SBATCH -J NF
 
 ## Test pyairtable version
-module load python/3.8.8
+module load python/3.12.4
 PYAIRTABLE_VERSION=$(python -c "import pyairtable; print(pyairtable.__version__)")
-if [[ $PYAIRTABLE_VERSION != '2.1.0.post1' ]]; then
+if [[ $PYAIRTABLE_VERSION != '3.2.0' ]]; then
 	echo "PLEASE UPDATE PYAIRTABLE"
-	echo "module load python/3.8.8"
-	echo "pip install --user pyairtable==2.1.0.post1"
+	echo "module load python/3.12.4"
+	echo "pip install --user pyairtable==3.2.0"
 	exit 1
 fi
 module unload python
