@@ -5,7 +5,7 @@ process normalize {
 	module 'r/4.5.0'
 	cache 'lenient'
 
-	memory { 12.GB * task.attempt }
+	memory { 24.GB * task.attempt }
 	errorStrategy { task.exitStatus == 137 ? 'retry' : 'finish' }
 	maxRetries 3
 
