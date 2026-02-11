@@ -2,10 +2,10 @@
 // TODO: Parse the params column and pass it here
 process normalize {
 	tag "$meta.group_norm"
-	module 'r/4.4.0'
+	module 'r/4.5.0'
 	cache 'lenient'
 
-	memory { 12.GB * task.attempt }
+	memory { 24.GB * task.attempt }
 	errorStrategy { task.exitStatus == 137 ? 'retry' : 'finish' }
 	maxRetries 3
 

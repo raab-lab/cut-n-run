@@ -9,6 +9,7 @@ include { bt2 }					from '../modules/align'
 include { sort }				from '../modules/samtools'
 include { filter }				from '../modules/samtools'
 include { macs }				from '../modules/macs'
+include { mspc }				from '../modules/mspc'
 include { normalize }				from '../modules/normalize'
 include { coverage as single_coverage }		from '../modules/coverage'
 include { coverage as group_coverage }		from '../modules/coverage'
@@ -87,6 +88,18 @@ workflow CNR {
 
 	// Call peaks
 	macs(bam, params.genomeSize)
+
+	// Call consensus peaks if enabled
+	if(params.call_consensus_peaks){
+		// Group peaks by group_avg for consensus calling
+		macs.out.peaks
+			.map { meta, peaks -> [ meta.group_avg, meta, peaks ] }
+			.groupTuple(by: [0])
+			.filter { group_id, metas, peak_files -> peak_files.size() >= 2 }
+			.set { grouped_peaks }
+
+		mspc(grouped_peaks)
+	}
 
 	// First pass of coverage, no normalization
 	single_coverage(picard_md.out.bam, 1, params.genomeSize)
