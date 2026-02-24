@@ -41,6 +41,9 @@ def helpMessage() {
 	--mode <value>
 		'cnr' or 'atac'. 'atac' adds mitochondrial read filtering and exclusion list filtering [Default: cnr]
 
+	--single
+		Flag to run in single end mode
+
 	--exclusionList </path/>
 		Path to ATACseq exclusion list [Default:/proj/jraablab/users/pkuhlers/seq_resources/hg38-exclusion.v3.bed]
 

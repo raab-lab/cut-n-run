@@ -65,6 +65,9 @@ Path to your desired output directory [Default: Output]
 `--mode <value>`
 	'cnr' or 'atac'. 'atac' adds mitochondrial read filtering and exclusion list filtering [Default: cnr]
 
+`--single`
+	Flag to run in single end mode [Default: false]
+
 `--exclusionList </path/>`
 	Path to ATACseq exclusion list [Default:/proj/jraablab/users/pkuhlers/seq_resources/hg38-exclusion.v3.bed]
 

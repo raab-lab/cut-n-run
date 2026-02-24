@@ -20,6 +20,7 @@ params.call_consensus_peaks	= false
 params.mspc_args		= ''
 params.help			= false
 params.mode			= 'cnr'
+params.single			= false
 
 // import subworkflows
 

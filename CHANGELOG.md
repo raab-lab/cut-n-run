@@ -3,6 +3,17 @@ raab-lab/cut-n-run: Changelog
 
 The format of this changelog is based on the [nf-core](https://github.com/nf-core/rnaseq/blob/master/CHANGELOG.md) changelog.
 
+
+## [4.3] - 2025-06-16
+
+Release adds a single end parameter.
+
+### Parameters
+
+| Old parameters         | New parameters         |
+| ---------------------- | ---------------------- |
+|                        | `--single`             |
+
 ## [4.2] - 2025-06-16
 
 This release adds genotype to the sample sheet ([docs](docs/params.md)).

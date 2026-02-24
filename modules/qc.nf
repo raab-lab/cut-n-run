@@ -14,12 +14,14 @@ process trim {
    tuple val(meta), path(fastq1), path(fastq2)
 
    output:
-   tuple val(meta), path("*_val_1.fq.gz"), path("*_val_2.fq.gz"), emit: trimmed
+   tuple val(meta), path("*_val_1.fq.gz"), path("*_val_2.fq.gz", optional: true), emit: trimmed
    path "*.{zip,html}",	emit: fqc
 
    script:
+
+   def reads = params.single ? "$fq1" : "--paired $fq1 $fq2"   
    """
-   trim_galore -j ${task.cpus} --fastqc --paired --gzip --basename ${meta.id} ${fastq1} ${fastq2}
+   trim_galore -j ${task.cpus} --fastqc --gzip --basename ${meta.id} ${fastq1} ${fastq2}
    """
 }
 

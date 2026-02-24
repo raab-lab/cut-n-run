@@ -21,14 +21,14 @@ process bt2 {
 
 	script:
 
+	def reads = params.single ? "-U $fq1" : "-1 $fq1 -2 $fq2"
 	"""
 	bowtie2 \\
 		-x ${index}/genome \\
 		-p ${task.cpus} \\
 		--very-sensitive-local \\
 		-X 800 \\
-		-1 $fq1 \\
-		-2 $fq2 \\
+		$reads \\
 		2>${meta.id}.alignment_stats.txt |\\
 		samtools view -b > ${meta.id}.aligned.bam
 	"""
