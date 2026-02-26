@@ -19,9 +19,9 @@ process trim {
 
    script:
 
-   def reads = params.single ? "$fq1" : "--paired $fq1 $fq2"   
+   def reads = params.single ? "$fastq1" : "--paired $fastq1 $fastq2"   
    """
-   trim_galore -j ${task.cpus} --fastqc --gzip --basename ${meta.id} ${fastq1} ${fastq2}
+   trim_galore -j ${task.cpus} --fastqc --gzip --basename ${meta.id} $reads
    """
 }
 
