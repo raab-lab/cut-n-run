@@ -27,7 +27,7 @@ process mspc {
 		# Extract sample name from peak file
 		sample_name=\$(basename \$peak_file | sed 's/_peaks.narrowPeak//')
 		# Convert narrowPeak to BED format (first 4 columns: chr, start, end, name)
-		awk 'OFS="\\t" {print \$1, \$2, \$3, \$4, \$3}' \$peak_file > \${sample_name}.bed
+		awk 'OFS="\\t" {print \$1, \$2, \$3, \$4, \$8}' \$peak_file > \${sample_name}.bed
 	done
 
 	# Need to have MSPC downloaded and able to run
@@ -40,7 +40,7 @@ process mspc {
 		-w $weak_threshold \\
 		-s $strong_threshold \\
 		-g $gamma \\
-		-c $min_overlap \\
+		-c $min_overlap\\
 		$mspc_args
 
 	# Rename consensus peaks file to include group ID
