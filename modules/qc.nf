@@ -74,3 +74,37 @@ process picard_md {
 		CREATE_INDEX=true
 	"""
 }
+
+// Mark duplicates once, on the combined reference, before partitioning.
+//
+// Marking on the combined BAM is what keeps host and calibrator fragments under
+// the same duplicate policy, so a host/external ratio is formed from
+// symmetrically filtered quantities. These metrics summarize host plus
+// calibrator reads and are labeled accordingly; species-specific duplicate
+// fractions come from the pair-classification table instead.
+
+process picard_md_combined {
+	tag "$meta.id"
+	label "large"
+	module 'picard/2.26.11'
+	module 'r/4.4.0'
+
+	publishDir "${params.outdir}/${meta.id}/qc"
+
+	input:
+	tuple val(meta), path(bam), path(bai)
+
+	output:
+	tuple val(meta), path("*_combined_markdup.bam"), path("*_combined_markdup.bai"), emit: bam
+	path "*_combined_dup_metrics.txt", emit: metrics
+
+	script:
+	"""
+	picard MarkDuplicates \\
+		I=$bam \\
+		O=${meta.id}_combined_markdup.bam \\
+		M=${meta.id}_combined_dup_metrics.txt \\
+		REMOVE_DUPLICATES=false \\
+		CREATE_INDEX=true
+	"""
+}
