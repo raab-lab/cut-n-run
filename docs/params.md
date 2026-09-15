@@ -125,3 +125,68 @@ Email address to notify when the pipeline has finished
 `-resume`
 
 Flag to pick back up from last pipeline execution (works even if first time)
+
+## SRA acquisition
+
+`--sra_manifest </path/>`
+
+Path to a reviewed CSV with one row per SRR run accession, used instead of
+`--sample_sheet`. The two are mutually exclusive. Required columns are `Run`,
+`SampleID`, `Cell Line`, `Genotype`, `Antibody`, `Treatment`, and `Replicate`.
+Optional grouping and normalization columns accepted by `--sample_sheet` may
+also be supplied, as may GEO provenance columns such as `geo_series`,
+`geo_sample`, and `sra_experiment`, which are retained in the published run
+manifest but not interpreted.
+
+Multiple rows may share one `SampleID` when a biological library was sequenced
+across several runs; their remaining metadata must be identical and their mates
+are merged in stable accession order before trimming. A run accession may
+appear only once.
+
+Only paired-end Illumina runs are supported. SRA layout metadata is a preflight
+filter only; the authoritative check is that both mates convert successfully
+and contain equal record counts.
+
+`--sra_max_size <size>`
+
+Maximum accession size accepted by `prefetch` [Default: 100G]. `prefetch`
+defaults to refusing accessions above 20G, so the pipeline always sets this
+explicitly and records the value in the acquisition manifest.
+
+## External calibration
+
+`--host_fasta </path/>`
+
+Path to the host genome FASTA. Required whenever
+`--external_calibration_fasta` is supplied.
+
+`--external_calibration_fasta </path/>`
+
+Path to the external calibrator genome FASTA. Supplying it enables competitive
+alignment against a single combined host + calibrator reference. Host contig
+names are unchanged; every calibrator contig is renamed with the reserved
+`calib__` prefix. The build fails if host contigs already use that prefix or if
+either FASTA contains duplicate contig names.
+
+Only the host partition continues into filtering, peak calling, coverage, and
+downstream analysis. Calibrator contigs never enter the host feature universe.
+
+`--combined_index_cache </path/>`
+
+Optional shared directory for content-addressed combined Bowtie2 indexes. The
+cache key is derived from the SHA-256 contents of both FASTAs, the prefix
+convention, and the Bowtie2 index-format compatibility version. Omit to build
+the index inside the run's work directory.
+
+`--calibration_alignment_mode <value>`
+
+Either `local` or `end-to-end` [Default: local]. `local` uses
+`--very-sensitive-local` and is the production setting, matching the standard
+mapping path. `end-to-end` uses `--very-sensitive` and exists only for the
+documented sensitivity comparison; it is not a production output. Valid only
+together with `--external_calibration_fasta`.
+
+Calibration mode requires Bowtie2's default mixed and discordant search modes
+and refuses to run if `--no-mixed` or `--no-discordant` is present, because
+suppressing them would make the `singleton` and `mixed` pair classes
+structurally zero.

@@ -151,3 +151,65 @@ R1,R2,SampleNumber,SampleID,Cell Line,Genotype,Antibody,Treatment,Replicate,grou
 
 These can be customized using the `--mspc_args` parameter.
 
+
+SRA Input
+---------
+
+Published paired-end data can be supplied as reviewed SRA run accessions
+instead of local FASTQ paths. `--sample_sheet` and `--sra_manifest` are
+mutually exclusive; the local-FASTQ path is unchanged and remains the default.
+
+```
+nextflow run raab-lab/cut-n-run -r <tag> \
+    --sra_manifest reviewed_runs.csv \
+    --sra_max_size 100G \
+    --outdir Output
+```
+
+The manifest holds one row per SRR:
+
+```
+Run,SampleID,Cell Line,Genotype,Antibody,Treatment,Replicate
+SRR00000001,Sample1,HeLa,WT,H3K27me3,DMSO,1
+SRR00000002,Sample1,HeLa,WT,H3K27me3,DMSO,1
+SRR00000003,Sample2,HeLa,WT,H3K27me3,EPZ,1
+```
+
+Rows sharing a `SampleID` are merged in stable accession order after
+conversion, so the example above yields two samples. The pipeline does not
+infer a biological comparison from a GEO series; supply reviewed SRR-level
+metadata, not a bare GSE accession.
+
+External Calibration
+--------------------
+
+Supplying an external calibrator genome switches the pipeline to competitive
+alignment against a single combined reference, which is how spike-in
+normalization counts are recovered from the same alignment as the host signal.
+
+```
+nextflow run raab-lab/cut-n-run -r <tag> \
+    --sra_manifest reviewed_runs.csv \
+    --host_fasta /path/to/hg38.fa \
+    --external_calibration_fasta /path/to/dm6.fa \
+    --combined_index_cache /path/to/combined_genomes \
+    --outdir Output
+```
+
+Behavior:
+
+- Calibrator contigs are renamed with the reserved `calib__` prefix, so host
+  contig names and their reference IDs are unchanged.
+- Reads are aligned once, duplicates are marked once on the combined BAM, and
+  pairs are classified as `both_host`, `both_calib`, `mixed`, `singleton`, or
+  `unmapped` before any proper-pair or MAPQ filtering.
+- The host BAM is rebuilt with a host-only `@SQ` dictionary, so no `calib__`
+  contig reaches MACS2, deepTools, or downstream analysis in either records or
+  header.
+- `calibration_summary.tsv` is the authoritative source of host and external
+  counts. Do not recount either quantity from the filtered host BAM; the host
+  filter is record-level while the calibration counts are pair-level.
+
+Absolute host counts from a combined-reference run are not comparable to counts
+from a host-only run, because competitive alignment changes the alignment
+competition. Within-dataset contrasts are unaffected.

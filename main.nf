@@ -21,6 +21,16 @@ params.mspc_args		= ''
 params.help			= false
 params.mode			= 'cnr'
 
+// SRA acquisition params
+params.sra_manifest		= ''
+params.sra_max_size		= '100G'
+
+// External-calibration params
+params.host_fasta			= ''
+params.external_calibration_fasta	= ''
+params.combined_index_cache		= ''
+params.calibration_alignment_mode	= 'local'
+
 // import subworkflows
 
 include { CREATE_SAMPLESHEET }				from './subworkflows/create_samplesheet'
@@ -33,8 +43,11 @@ include { CNR as AT_CNR }				from './subworkflows/cnr'
 include { pull_experiment; pull_samples }		from './modules/airtable'
 include { update_paths }				from './modules/airtable'
 include { helpMessage }					from './modules/functions'
+include { validateRunParams }				from './modules/functions'
 
 workflow {
+
+	validateRunParams(params)
 
 	if (params.help) {
 		log.info helpMessage()
