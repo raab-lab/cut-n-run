@@ -18,6 +18,7 @@ import unittest
 REPO = pathlib.Path(__file__).resolve().parent.parent
 
 ALIGN = (REPO / "modules" / "align.nf").read_text()
+REFERENCE = (REPO / "modules" / "reference.nf").read_text()
 QC = (REPO / "modules" / "qc.nf").read_text()
 MULTIQC = (REPO / "modules" / "multiqc.nf").read_text()
 CORE = (REPO / "subworkflows" / "cnr.nf").read_text()
@@ -75,6 +76,13 @@ class CalibrationContractTests(unittest.TestCase):
         self.assertIn("--no-mixed", ALIGN)
         self.assertIn("--no-discordant", ALIGN)
         self.assertIn("error", ALIGN)
+
+    def test_reference_fastas_are_staged_without_collision(self):
+        # hg38_UCSC and dm6_UCSC both ship
+        # Sequence/WholeGenomeFasta/genome.fa, so staging both into one work
+        # directory fails with an input file name collision.
+        self.assertIn("stageAs: 'host/*'", REFERENCE)
+        self.assertIn("stageAs: 'external/*'", REFERENCE)
 
     def test_duplicates_are_marked_before_partitioning(self):
         self.assertIn("picard_md_combined", CORE)

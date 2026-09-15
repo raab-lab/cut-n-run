@@ -11,8 +11,12 @@ process build_combined_reference {
 	publishDir "${params.outdir}/manifests", mode: "copy", pattern: "reference_manifest.json"
 
 	input:
-	path host_fasta
-	path external_fasta
+	// Reference FASTAs routinely share a basename (both hg38_UCSC and dm6_UCSC
+	// ship Sequence/WholeGenomeFasta/genome.fa), so they are staged into
+	// separate directories. Keeping the original basename preserves the
+	// resolved source path that the builder records for provenance.
+	path host_fasta, stageAs: 'host/*'
+	path external_fasta, stageAs: 'external/*'
 	val cache_dir
 
 	output:
