@@ -34,6 +34,19 @@ def parse_sra_manifest(LinkedHashMap row){
 	return [ meta, row.Run ]
 }
 
+//' Order one library's runs by accession and reorder its mates to match.
+//
+// The index list must be materialized before sorting: sorting an IntRange in
+// place throws UnsupportedOperationException, and channel operators are not
+// executed by a DAG preview, so that only surfaces at runtime.
+def merge_run_group(id, metas, runs, r1s, r2s) {
+	def idx = (0..<runs.size()).toList().sort { a, b -> runs[a] <=> runs[b] }
+	return [ metas[0],
+		 idx.collect { runs[it] },
+		 idx.collect { r1s[it] },
+		 idx.collect { r2s[it] } ]
+}
+
 workflow SRA_INPUT {
 
 	take:
@@ -59,11 +72,7 @@ workflow SRA_INPUT {
 		.map { meta, run, r1, r2 -> [ meta.id, meta, run, r1, r2 ] }
 		.groupTuple(by: 0)
 		.map { id, metas, runs, r1s, r2s ->
-			def order = (0..<runs.size()).sort { runs[it] }
-			[ metas[0],
-			  order.collect { runs[it] },
-			  order.collect { r1s[it] },
-			  order.collect { r2s[it] } ]
+			merge_run_group(id, metas, runs, r1s, r2s)
 		}
 		.set { GROUPED }
 
