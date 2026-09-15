@@ -69,6 +69,15 @@ process mapping_manifest {
 	"""
 	set -euo pipefail
 
+	# workflow.revision/commitId are null when the pipeline is run from a local
+	# directory rather than via -r, so fall back to the checkout's own SHA.
+	# A BAM whose provenance cannot name the code that produced it is not
+	# reproducible, so 'unknown' is a last resort, not an accepted value.
+	revision='${pipeline_revision}'
+	if [ "\$revision" = "unknown" ] || [ -z "\$revision" ]; then
+		revision=\$(git -C ${workflow.projectDir} rev-parse HEAD 2>/dev/null || echo unknown)
+	fi
+
 	bt2_args=\$(head -n 1 ${bt2_args})
 	bt2_version=\$(sed -n '2p' ${bt2_args})
 	samtools_version=\$(samtools --version | head -n 1)
@@ -81,6 +90,6 @@ process mapping_manifest {
 		'${meta.id}' '${host_bam.name}' '${host_bai.name}' '${alignment_mode}' \\
 		"\${bt2_args}" "\${bt2_version}" "\${samtools_version}" \\
 		"\${cache_key}" "\${host_sha}" "\${external_sha}" \\
-		'${pipeline_revision}' >> ${meta.id}.mapping.tsv
+		"\${revision}" >> ${meta.id}.mapping.tsv
 	"""
 }

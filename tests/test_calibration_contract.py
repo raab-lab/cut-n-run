@@ -84,6 +84,12 @@ class CalibrationContractTests(unittest.TestCase):
         self.assertIn("stageAs: 'host/*'", REFERENCE)
         self.assertIn("stageAs: 'external/*'", REFERENCE)
 
+    def test_mapping_manifest_resolves_a_pipeline_revision(self):
+        # workflow.revision and workflow.commitId are both null for a local
+        # directory run, which silently recorded 'unknown' against every BAM.
+        self.assertIn("rev-parse HEAD", REFERENCE)
+        self.assertIn("workflow.projectDir", REFERENCE)
+
     def test_duplicates_are_marked_before_partitioning(self):
         self.assertIn("picard_md_combined", CORE)
         self.assertIn("partition_calibration_bam", CORE)
