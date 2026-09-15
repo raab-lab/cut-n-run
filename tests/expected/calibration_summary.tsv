@@ -1,0 +1,7 @@
+SampleID	host_fragments	external_fragments	classified_fragments	external_fraction	mapq_threshold	duplicate_state
+fixture	3	1	4	0.25	0	all
+fixture	2	1	3	0.3333333333333333	0	nonduplicate
+fixture	3	1	4	0.25	10	all
+fixture	2	1	3	0.3333333333333333	10	nonduplicate
+fixture	3	1	4	0.25	30	all
+fixture	2	1	3	0.3333333333333333	30	nonduplicate
