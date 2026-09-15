@@ -92,4 +92,22 @@ lower <- with_mutation(valid_path, function(x) {
 })
 stopifnot(nrow(lower) == 1L)
 
+## Fields needing CSV quoting are rejected, because the checked manifest is
+## written unquoted for Nextflow's splitCsv.
+expect_error(
+	with_mutation(valid_path, function(x) { x$Treatment <- "DMSO,control"; x }),
+	"must not contain commas")
+expect_error(
+	with_mutation(valid_path, function(x) { x$Antibody <- 'H3K27me3"'; x }),
+	"must not contain commas")
+
+## The written manifest must be free of quote characters entirely.
+tmpdir <- tempfile(); dir.create(tmpdir)
+old <- setwd(tmpdir)
+checked <- validate_sra_manifest(file.path(old, valid_path))
+write.csv(checked, "sra_manifest_checked.csv", row.names = FALSE, quote = FALSE, na = "")
+written <- readLines("sra_manifest_checked.csv")
+setwd(old)
+stopifnot(!any(grepl('"', written, fixed = TRUE)))
+
 cat("SRA manifest validation OK\n")

@@ -29,6 +29,16 @@ validate_sra_manifest <- function(path) {
   if (any(toupper(x$LibraryLayout) != "PAIRED")) stop("LibraryLayout must be PAIRED")
   if (any(toupper(x$Platform) != "ILLUMINA")) stop("Platform must be ILLUMINA")
 
+  # The checked manifest is written unquoted, matching check_samplesheet.R,
+  # because Nextflow's splitCsv retains quote characters in the parsed keys and
+  # values. Reject any content that would need quoting rather than emit it.
+  unquotable <- vapply(x, function(v) any(grepl('[,"]', v, useBytes = TRUE)),
+                       logical(1))
+  if (any(unquotable)) {
+    stop("SRA manifest fields must not contain commas or double quotes; ",
+         "offending column(s): ", paste(names(unquotable)[unquotable], collapse = ", "))
+  }
+
   by_sample <- split(x, x$SampleID)
   conflict <- vapply(by_sample, function(one) {
     any(vapply(one[biological_sra_columns], function(v) length(unique(v)) != 1L, logical(1)))
@@ -44,7 +54,7 @@ if (sys.nframe() == 0L) {
   args <- commandArgs(trailingOnly = TRUE)
   if (length(args) != 1L) stop("usage: check_sra_manifest.R <sra_manifest.csv>")
   checked <- validate_sra_manifest(args[1])
-  write.csv(checked, "sra_manifest_checked.csv", row.names = FALSE, quote = TRUE, na = "")
+  write.csv(checked, "sra_manifest_checked.csv", row.names = FALSE, quote = FALSE, na = "")
   message(sprintf("SRA manifest OK: %d runs across %d biological samples",
                   nrow(checked), length(unique(checked$SampleID))))
 }
