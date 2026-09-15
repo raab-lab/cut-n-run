@@ -37,6 +37,9 @@ include { CREATE_SAMPLESHEET }				from './subworkflows/create_samplesheet'
 include { CREATE_SAMPLESHEET as AT_CREATE_SS}		from './subworkflows/create_samplesheet'
 include { CNR }						from './subworkflows/cnr'
 include { CNR as AT_CNR }				from './subworkflows/cnr'
+include { LOCAL_INPUT }					from './subworkflows/local_input'
+include { LOCAL_INPUT as AT_LOCAL_INPUT }		from './subworkflows/local_input'
+include { SRA_INPUT }					from './subworkflows/sra_input'
 
 // import modules
 
@@ -60,7 +63,8 @@ workflow {
 
 
 	if (params.pull_samples) {
-		pull_samples(params.pull_samples) | AT_CNR
+		AT_LOCAL_INPUT(pull_samples(params.pull_samples))
+		AT_CNR(AT_LOCAL_INPUT.out.reads)
 	}
 
 	if (params.create_samplesheet && params.sample_sheet) {
@@ -71,7 +75,15 @@ workflow {
 		CREATE_SAMPLESHEET(params.create_samplesheet)
 	}
 
+	// Either input producer emits the same (meta, R1, R2) contract, so the
+	// analysis workflow itself is not duplicated.
 	if (params.sample_sheet) {
-		CNR(params.sample_sheet)
+		LOCAL_INPUT(params.sample_sheet)
+		CNR(LOCAL_INPUT.out.reads)
+	}
+
+	if (params.sra_manifest) {
+		SRA_INPUT(params.sra_manifest)
+		CNR(SRA_INPUT.out.reads)
 	}
 }
