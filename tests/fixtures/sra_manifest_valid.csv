@@ -1,0 +1,2 @@
+Run,SampleID,Cell Line,Genotype,Antibody,Treatment,Replicate,LibraryLayout,Platform,geo_series,geo_sample
+SRR10000001,Sample1,HeLa,WT,H3K27me3,DMSO,1,PAIRED,ILLUMINA,GSE000001,GSM000001

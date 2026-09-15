@@ -1,0 +1,3 @@
+Run,SampleID,Cell Line,Genotype,Antibody,Treatment,Replicate,LibraryLayout,Platform
+SRR10000001,Sample1,HeLa,WT,H3K27me3,DMSO,1,PAIRED,ILLUMINA
+SRR10000001,Sample2,HeLa,WT,H3K27me3,DMSO,2,PAIRED,ILLUMINA
