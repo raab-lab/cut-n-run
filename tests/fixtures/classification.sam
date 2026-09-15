@@ -1,0 +1,20 @@
+@HD	VN:1.6	SO:queryname
+@SQ	SN:chrHost1	LN:2000
+@SQ	SN:chrHost2	LN:1500
+@SQ	SN:calib__chrCalib1	LN:1200
+@RG	ID:fixture	SM:fixture
+@PG	ID:bowtie2	PN:bowtie2	VN:2.5.4
+host_pair	99	chrHost1	100	42	10M	=	300	210	ACGTACGTAC	IIIIIIIIII
+host_pair	147	chrHost1	300	42	10M	=	100	-210	ACGTACGTAC	IIIIIIIIII
+host_pair	256	chrHost2	700	0	10M	*	0	0	ACGTACGTAC	IIIIIIIIII
+calib_pair	99	calib__chrCalib1	200	42	10M	=	400	210	ACGTACGTAC	IIIIIIIIII
+calib_pair	147	calib__chrCalib1	400	42	10M	=	200	-210	ACGTACGTAC	IIIIIIIIII
+mixed_pair	65	chrHost1	500	42	10M	calib__chrCalib1	600	0	ACGTACGTAC	IIIIIIIIII
+mixed_pair	129	calib__chrCalib1	600	42	10M	chrHost1	500	0	ACGTACGTAC	IIIIIIIIII
+singleton_pair	73	chrHost2	800	42	10M	=	800	0	ACGTACGTAC	IIIIIIIIII
+singleton_pair	133	chrHost2	800	0	*	=	800	0	ACGTACGTAC	IIIIIIIIII
+singleton_pair	2048	chrHost2	900	42	5M5S	*	0	0	ACGTACGTAC	IIIIIIIIII
+unmapped_pair	77	*	0	0	*	*	0	0	ACGTACGTAC	IIIIIIIIII
+unmapped_pair	141	*	0	0	*	*	0	0	ACGTACGTAC	IIIIIIIIII
+duplicate_pair	1123	chrHost1	100	42	10M	=	300	210	ACGTACGTAC	IIIIIIIIII
+duplicate_pair	1171	chrHost1	300	42	10M	=	100	-210	ACGTACGTAC	IIIIIIIIII
