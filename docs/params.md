@@ -153,6 +153,38 @@ Maximum accession size accepted by `prefetch` [Default: 100G]. `prefetch`
 defaults to refusing accessions above 20G, so the pipeline always sets this
 explicitly and records the value in the acquisition manifest.
 
+## Barcoded spike-in nucleosomes
+
+`--barcode_fasta </path/>`
+
+Path to a FASTA of barcoded spike-in nucleosome sequences, such as the
+SNAP-ChIP or SNAP-CUTANA K-MetStat panel. The sequences are supplied by the
+vendor; this pipeline does not ship them.
+
+Supplying it enables barcode calibration. Panel members share a common Widom
+601 backbone and differ only in a short barcode, so aligning them competitively
+gives nearly every spike-in read MAPQ 0-1 and the configured MAPQ filter would
+discard the calibration signal. They are therefore counted by exact sequence
+match, which is what the vendor protocols specify.
+
+Counting runs on the merged, untrimmed reads, because trimming can clip a
+barcode near a read end. A fragment is counted once; either mate may carry the
+barcode and either orientation matches. Fragments whose mates disagree, or that
+match two panel members, are reported as ambiguous and excluded.
+
+The host path is the ordinary single-genome pipeline driven by `--bt2_index`;
+only the external measurement differs. Because barcodes are counted before
+alignment, the external count carries no MAPQ and no duplicate state, so the
+published `calibration_summary.tsv` reports rows at `duplicate_state: all`
+only, with the host count varying across MAPQ thresholds.
+
+Mutually exclusive with `--external_calibration_fasta`: the two are different
+measurements, not variants of one, and combining them would give a sample two
+incompatible external counts.
+
+Barcoded nucleosomes are appropriate for histone-mark targets only. A
+non-histone target has no equivalent pre-immunoprecipitation reference.
+
 ## External calibration
 
 `--host_fasta </path/>`

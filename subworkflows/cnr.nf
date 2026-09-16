@@ -12,6 +12,9 @@ include { filter }				from '../modules/samtools'
 include { filter as filter_host }		from '../modules/samtools'
 include { partition_calibration_bam }		from '../modules/samtools'
 include { build_combined_reference }		from '../modules/reference'
+include { count_barcodes }			from '../modules/barcode'
+include { host_pair_counts }			from '../modules/barcode'
+include { barcode_calibration_summary }		from '../modules/barcode'
 include { mapping_manifest }			from '../modules/reference'
 include { macs }				from '../modules/macs'
 include { mspc }				from '../modules/mspc'
@@ -137,6 +140,28 @@ workflow CNR {
 		host_marked_bam = picard_md.out.bam
 		alignment_stats = bt2.out.stats
 		dup_metrics = picard_md.out.metrics
+
+		// Barcoded spike-in nucleosomes are counted by exact sequence match on
+		// the untrimmed reads. The host path above is unchanged: only the
+		// external measurement differs from a standard run.
+		if(params.barcode_fasta) {
+			count_barcodes(reads, file(params.barcode_fasta))
+			host_pair_counts(host_marked_bam, params.mapq)
+
+			barcode_calibration_summary(
+				count_barcodes.out.summary.join(host_pair_counts.out.counts)
+			)
+
+			barcode_calibration_summary.out.summary
+				.collectFile(name: 'calibration_summary.tsv',
+					     storeDir: "${params.outdir}/manifests",
+					     keepHeader: true, skip: 1, sort: true)
+
+			count_barcodes.out.counts
+				.collectFile(name: 'barcode_counts.tsv',
+					     storeDir: "${params.outdir}/manifests",
+					     keepHeader: true, skip: 1, sort: true)
+		}
 	}
 
 	// Call consensus peaks if enabled

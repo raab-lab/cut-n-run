@@ -30,6 +30,7 @@ params.host_fasta			= ''
 params.external_calibration_fasta	= ''
 params.combined_index_cache		= ''
 params.calibration_alignment_mode	= 'local'
+params.barcode_fasta			= ''
 
 // import subworkflows
 

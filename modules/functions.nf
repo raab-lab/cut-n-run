@@ -92,6 +92,15 @@ def helpMessage() {
 		Optional shared directory for content-addressed combined Bowtie2
 		indexes. Omit to build the index inside the run's work directory.
 
+	--barcode_fasta </path/>
+		Path to a FASTA of barcoded spike-in nucleosome sequences (e.g. the
+		SNAP-ChIP / SNAP-CUTANA K-MetStat panel). Enables barcode calibration:
+		spike-in fragments are counted by exact sequence match on the untrimmed
+		reads rather than aligned, because panel members share a Widom 601
+		backbone and would otherwise be discarded by the MAPQ filter. The host
+		path is the ordinary single-genome pipeline. Mutually exclusive with
+		--external_calibration_fasta.
+
 	--calibration_alignment_mode <value>
 		'local' or 'end-to-end'. 'local' uses --very-sensitive-local and is
 		the production setting. 'end-to-end' uses --very-sensitive and exists
@@ -145,6 +154,13 @@ def validateRunParams(params) {
 	}
 	if (params.external_calibration_fasta && !params.host_fasta) {
 		throw new IllegalArgumentException('--external_calibration_fasta requires --host_fasta')
+	}
+	// The two calibration mechanisms are different measurements, not variants:
+	// barcoded nucleosomes are counted by exact sequence match while a
+	// calibrator genome is aligned competitively. Combining them in one run
+	// would produce two incompatible external counts for the same sample.
+	if (params.barcode_fasta && params.external_calibration_fasta) {
+		throw new IllegalArgumentException('--barcode_fasta and --external_calibration_fasta are mutually exclusive')
 	}
 	if (!(params.calibration_alignment_mode in ['local', 'end-to-end'])) {
 		throw new IllegalArgumentException('--calibration_alignment_mode must be local or end-to-end')

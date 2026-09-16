@@ -21,4 +21,8 @@ expect_failure "local or end-to-end" \
 expect_failure "valid only with --external_calibration_fasta" \
     --sample_sheet local.csv --calibration_alignment_mode end-to-end
 
+expect_failure "mutually exclusive" \
+    --sample_sheet local.csv --barcode_fasta panel.fa \
+    --external_calibration_fasta dm6.fa --host_fasta hg38.fa
+
 echo "CLI contract OK"
