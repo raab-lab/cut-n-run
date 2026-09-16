@@ -12,6 +12,7 @@ import subprocess
 import sys
 import tempfile
 import textwrap
+import time
 import unittest
 
 REPO = pathlib.Path(__file__).resolve().parent.parent
@@ -168,6 +169,59 @@ class CombinedReferenceTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0)
         suffixes = {p.suffix for p in final.glob("genome.*")}
         self.assertNotIn(".bt2l", suffixes)
+
+    # -- abandoned build cleanup ------------------------------------------
+
+    def test_stale_temp_dir_is_reclaimed(self):
+        import build_combined_reference as builder
+        cache = self.tmp / "cache_sweep"
+        final = pathlib.Path(run_builder(self.path, ["--cache-dir", str(cache)]).stdout.strip())
+        key = final.name
+
+        # A build killed by a signal leaves a multi-GB partial directory behind.
+        stale = cache / f".tmp.{key}.deadbeef"
+        stale.mkdir()
+        (stale / "genome.1.bt2.tmp").write_text("partial")
+        old = time.time() - 48 * 3600
+        os.utime(stale, (old, old))
+
+        removed = builder.sweep_stale_temp_dirs(cache, key)
+        self.assertEqual(removed, [stale])
+        self.assertFalse(stale.exists())
+
+    def test_recent_temp_dir_is_left_alone(self):
+        # A concurrent build in progress must never be reclaimed.
+        import build_combined_reference as builder
+        cache = self.tmp / "cache_live"
+        final = pathlib.Path(run_builder(self.path, ["--cache-dir", str(cache)]).stdout.strip())
+        key = final.name
+
+        live = cache / f".tmp.{key}.livebuild"
+        live.mkdir()
+        self.assertEqual(builder.sweep_stale_temp_dirs(cache, key), [])
+        self.assertTrue(live.exists())
+
+    def test_sweep_leaves_other_keys_untouched(self):
+        import build_combined_reference as builder
+        cache = self.tmp / "cache_keys"
+        cache.mkdir(parents=True)
+        other = cache / ".tmp.someotherkey.abc"
+        other.mkdir()
+        old = time.time() - 48 * 3600
+        os.utime(other, (old, old))
+        self.assertEqual(builder.sweep_stale_temp_dirs(cache, "thiskey"), [])
+        self.assertTrue(other.exists())
+
+    def test_publish_reclaims_stale_dirs(self):
+        cache = self.tmp / "cache_publish"
+        final = pathlib.Path(run_builder(self.path, ["--cache-dir", str(cache)]).stdout.strip())
+        stale = cache / f".tmp.{final.name}.orphan"
+        stale.mkdir()
+        old = time.time() - 48 * 3600
+        os.utime(stale, (old, old))
+        result = run_builder(self.path, ["--cache-dir", str(cache)])
+        self.assertFalse(stale.exists())
+        self.assertIn("removed abandoned build directory", result.stderr)
 
     # -- concurrency ------------------------------------------------------
 

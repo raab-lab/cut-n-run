@@ -21,6 +21,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 import uuid
 
 EXTERNAL_PREFIX = "calib__"
@@ -177,11 +178,43 @@ def build_into(directory, host, external, contigs, manifest):
     return directory
 
 
+# A build killed by a signal (Nextflow aborting the workflow) cannot run its
+# own cleanup, so its temporary directory survives holding a partial index.
+# Those are never reusable, but they are several GB each, so a later build
+# reclaims them. The window is far longer than any real build, which keeps a
+# slow concurrent builder's directory safe.
+STALE_TEMP_HOURS = 24
+
+
+def sweep_stale_temp_dirs(cache, cache_key, max_age_hours=STALE_TEMP_HOURS):
+    """Remove abandoned temp dirs for this key. Returns the paths removed."""
+    cache = pathlib.Path(cache)
+    if not cache.is_dir():
+        return []
+    cutoff = time.time() - max_age_hours * 3600
+    removed = []
+    for entry in cache.glob(f".tmp.{cache_key}.*"):
+        if not entry.is_dir():
+            continue
+        try:
+            if entry.stat().st_mtime >= cutoff:
+                continue  # possibly a live build
+            shutil.rmtree(entry)
+            removed.append(entry)
+        except OSError:
+            # Another process may be reclaiming it; losing the race is fine.
+            continue
+    return removed
+
+
 def publish(cache, cache_key, build):
     """Build into a sibling temp dir and publish with one atomic rename."""
     cache = pathlib.Path(cache)
     cache.mkdir(parents=True, exist_ok=True)
     final_dir = cache / cache_key
+
+    for stale in sweep_stale_temp_dirs(cache, cache_key):
+        print(f"removed abandoned build directory {stale}", file=sys.stderr)
 
     if entry_is_complete(final_dir, cache_key):
         return final_dir
