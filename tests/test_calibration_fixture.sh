@@ -18,7 +18,7 @@ if command -v module >/dev/null 2>&1; then
     module load bowtie2/2.5.4 samtools/1.22 picard/2.26.11 || true
 fi
 
-bowtie2_version=$(bowtie2 --version | head -n 1 | awk '{print $NF}')
+bowtie2_version=$(bowtie2 --version | awk 'NR==1 {print $NF}')
 bowtie2_args="--very-sensitive-local -X 800"
 
 fail() {

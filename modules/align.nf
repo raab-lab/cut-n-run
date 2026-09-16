@@ -71,7 +71,10 @@ process bt2_combined {
 	set -euo pipefail
 
 	printf '%s\\n' "${args}" > ${meta.id}.bt2_args.txt
-	bowtie2 --version | head -n 1 >> ${meta.id}.bt2_args.txt
+	# awk, not head: head exits after the first line and closes the pipe,
+	# sending SIGPIPE to bowtie2, which under pipefail fails the task. It is a
+	# race, so it shows up intermittently across samples.
+	bowtie2 --version | awk 'NR==1' >> ${meta.id}.bt2_args.txt
 
 	bowtie2 \\
 		-x ${index}/genome \\

@@ -80,7 +80,7 @@ process mapping_manifest {
 
 	bt2_args=\$(head -n 1 ${bt2_args})
 	bt2_version=\$(sed -n '2p' ${bt2_args})
-	samtools_version=\$(samtools --version | head -n 1)
+	samtools_version=\$(samtools --version | awk 'NR==1')
 	cache_key=\$(python3 -c "import json,sys; print(json.load(open('${reference_manifest}'))['cache_key'])")
 	host_sha=\$(python3 -c "import json,sys; print(json.load(open('${reference_manifest}'))['host_sha256'])")
 	external_sha=\$(python3 -c "import json,sys; print(json.load(open('${reference_manifest}'))['external_sha256'])")

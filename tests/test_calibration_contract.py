@@ -90,6 +90,17 @@ class CalibrationContractTests(unittest.TestCase):
         self.assertIn("rev-parse HEAD", REFERENCE)
         self.assertIn("workflow.projectDir", REFERENCE)
 
+    def test_no_command_output_is_piped_into_head(self):
+        # `cmd | head -n 1` closes the pipe early and SIGPIPEs the writer,
+        # which under `set -o pipefail` fails the task intermittently.
+        for name, source in (("align.nf", ALIGN), ("reference.nf", REFERENCE),
+                             ("qc.nf", QC)):
+            for line in source.splitlines():
+                stripped = line.strip()
+                if "| head" in stripped and not stripped.startswith("//"):
+                    self.fail(f"{name}: pipes command output into head, which "
+                              f"can SIGPIPE the writer: {stripped!r}")
+
     def test_duplicates_are_marked_before_partitioning(self):
         self.assertIn("picard_md_combined", CORE)
         self.assertIn("partition_calibration_bam", CORE)
