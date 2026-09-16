@@ -15,8 +15,8 @@ process count_barcodes {
 	path barcode_fasta
 
 	output:
-	tuple val(meta), path("${meta.id}.barcode_summary.tsv"), emit: summary
-	path "${meta.id}.barcode_counts.tsv", emit: counts
+	tuple val(meta), path("${meta.id}.barcode_counts.tsv"), emit: counts
+	path "${meta.id}.barcode_summary.tsv", emit: summary
 
 	script:
 	// Counted on the merged, untrimmed reads: trimming can clip a barcode that
@@ -66,16 +66,21 @@ process barcode_calibration_summary {
 	publishDir "${params.outdir}/manifests/calibration", mode: "copy"
 
 	input:
-	tuple val(meta), path(barcode_summary), path(host_counts)
+	tuple val(meta), path(barcode_counts), path(host_counts)
+	path barcode_fasta
 
 	output:
 	path "${meta.id}.calibration_summary.tsv", emit: summary
 
 	script:
+	// The antibody names the on-target panel member; off-target members
+	// measure cross-reactivity and must not enter the size factor.
 	"""
 	build_barcode_calibration_summary.py \\
 		--sample-id "${meta.id}" \\
-		--barcode-summary ${barcode_summary} \\
+		--barcode-counts ${barcode_counts} \\
+		--barcodes ${barcode_fasta} \\
+		--target "${meta.ab}" \\
 		--host-counts ${host_counts} \\
 		--summary ${meta.id}.calibration_summary.tsv
 	"""

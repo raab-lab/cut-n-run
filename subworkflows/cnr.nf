@@ -149,7 +149,8 @@ workflow CNR {
 			host_pair_counts(host_marked_bam, params.mapq)
 
 			barcode_calibration_summary(
-				count_barcodes.out.summary.join(host_pair_counts.out.counts)
+				count_barcodes.out.counts.join(host_pair_counts.out.counts),
+				file(params.barcode_fasta)
 			)
 
 			barcode_calibration_summary.out.summary
@@ -158,6 +159,7 @@ workflow CNR {
 					     keepHeader: true, skip: 1, sort: true)
 
 			count_barcodes.out.counts
+				.map { meta, counts -> counts }
 				.collectFile(name: 'barcode_counts.tsv',
 					     storeDir: "${params.outdir}/manifests",
 					     keepHeader: true, skip: 1, sort: true)

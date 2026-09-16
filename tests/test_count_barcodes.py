@@ -164,28 +164,58 @@ class BarcodeCalibrationSummaryTests(unittest.TestCase):
             input=self.FIXTURE.read_text(), capture_output=True, text=True, check=True)
         return counts
 
-    def barcode_summary(self, fragments=250, total=10000):
-        path = self.tmp / "barcode_summary.tsv"
+    def panel(self):
+        path = self.tmp / "panel.fa"
         path.write_text(
-            "SampleID\ttotal_fragments\tbarcode_fragments\tambiguous_fragments\t"
-            "barcode_fraction\tn_barcodes\n"
-            f"S1\t{total}\t{fragments}\t3\t{fragments/total}\t3\n")
+            ">K4me3_A target=H3K4me3\nAAAA\n>K4me3_B target=H3K4me3\nCCCC\n"
+            ">K27me3_A target=H3K27me3\nGGGG\n>K9me3_A target=H3K9me3\nTTTT\n")
         return path
 
-    def build(self, barcode, host, check=True):
+    def barcode_summary(self, on_target=250, off_target=750):
+        """Per-barcode counts: on-target split across A/B, plus off-target."""
+        path = self.tmp / "barcode_counts.tsv"
+        rows = [("K4me3_A", on_target // 2), ("K4me3_B", on_target - on_target // 2),
+                ("K27me3_A", off_target // 2), ("K9me3_A", off_target - off_target // 2)]
+        path.write_text("SampleID\tbarcode\tfragment_count\n" +
+                        "".join(f"S1\t{n}\t{v}\n" for n, v in rows))
+        return path
+
+    def build(self, barcode, host, check=True, target="H3K4me3"):
         out = self.tmp / "calibration_summary.tsv"
         res = subprocess.run(
             [sys.executable, str(self.BUILDER), "--sample-id", "S1",
-             "--barcode-summary", str(barcode), "--host-counts", str(host),
+             "--barcode-counts", str(barcode), "--barcodes", str(self.panel()),
+             "--target", target, "--host-counts", str(host),
              "--summary", str(out)], capture_output=True, text=True, check=check)
         return res, out
+
+    def test_external_count_uses_the_on_target_barcode_only(self):
+        # Off-target members measure cross-reactivity, not spiked material.
+        _, out = self.build(self.barcode_summary(on_target=250, off_target=750),
+                            self.host_counts())
+        rows = [l.split("\t") for l in out.read_text().splitlines()[1:]]
+        self.assertEqual({r[2] for r in rows}, {"250"})
+        self.assertEqual({r[7] for r in rows}, {"on_target:H3K4me3"})
+        self.assertEqual({r[8] for r in rows}, {"1000"})  # total panel retained as QC
+
+    def test_absent_target_falls_back_to_the_whole_panel_and_says_so(self):
+        # An IgG control has no on-target member.
+        res, out = self.build(self.barcode_summary(), self.host_counts(), target="IgG")
+        rows = [l.split("\t") for l in out.read_text().splitlines()[1:]]
+        self.assertEqual({r[2] for r in rows}, {"1000"})
+        self.assertEqual({r[7] for r in rows}, {"all_barcodes"})
+        self.assertRegex(res.stderr, "no on-target barcode")
 
     def test_schema_matches_the_competitive_path(self):
         _, out = self.build(self.barcode_summary(), self.host_counts())
         header = out.read_text().splitlines()[0].split("\t")
-        self.assertEqual(header, ["SampleID", "host_fragments", "external_fragments",
-                                  "classified_fragments", "external_fraction",
-                                  "mapq_threshold", "duplicate_state"])
+        # The seven contract columns the importer requires come first; the
+        # barcode path appends provenance after them.
+        self.assertEqual(header[:7], ["SampleID", "host_fragments", "external_fragments",
+                                      "classified_fragments", "external_fraction",
+                                      "mapq_threshold", "duplicate_state"])
+        self.assertEqual(header[7:], ["calibration_basis", "total_barcode_fragments",
+                                      "on_target_fraction"])
 
     def test_every_calibrator_pair_class_is_empty_with_no_match_prefix(self):
         # All fixture pairs must land in both_host, so the host count is honest.
@@ -196,7 +226,7 @@ class BarcodeCalibrationSummaryTests(unittest.TestCase):
 
     def test_external_count_is_constant_across_mapq_strata(self):
         # Barcodes are counted pre-alignment, so they carry no MAPQ.
-        _, out = self.build(self.barcode_summary(fragments=250), self.host_counts())
+        _, out = self.build(self.barcode_summary(on_target=250), self.host_counts())
         rows = [l.split("\t") for l in out.read_text().splitlines()[1:]]
         self.assertTrue(rows)
         self.assertEqual({r[2] for r in rows}, {"250"})
@@ -205,15 +235,16 @@ class BarcodeCalibrationSummaryTests(unittest.TestCase):
         self.assertGreaterEqual(len({r[5] for r in rows}), 2)
 
     def test_fraction_is_external_over_classified(self):
-        _, out = self.build(self.barcode_summary(fragments=100), self.host_counts())
+        _, out = self.build(self.barcode_summary(on_target=100), self.host_counts())
         for line in out.read_text().splitlines()[1:]:
-            _, host, ext, classified, frac, _, _ = line.split("\t")
+            _, host, ext, classified, frac = line.split("\t")[:5]
             self.assertEqual(int(classified), int(host) + int(ext))
             self.assertAlmostEqual(float(frac), int(ext) / int(classified))
 
     def test_zero_barcode_fragments_is_an_error(self):
         # Silently emitting a zero external count would produce a meaningless
         # size factor rather than a failure.
-        res, _ = self.build(self.barcode_summary(fragments=0), self.host_counts(), check=False)
+        res, _ = self.build(self.barcode_summary(on_target=0, off_target=0),
+                            self.host_counts(), check=False)
         self.assertNotEqual(res.returncode, 0)
         self.assertRegex(res.stderr, "no barcode fragments")
