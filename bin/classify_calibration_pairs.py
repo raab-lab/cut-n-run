@@ -98,7 +98,10 @@ def check_pair(pair, qname):
         raise ValueError(f"{qname}: more than two primary records in one group")
     # Diagnose the absent mate specifically before reporting the group size.
     if not any(record.is_read1 for record in pair):
-        raise ValueError(f"{qname}: missing read1 (FLAG 0x40)")
+        raise ValueError(
+            f"{qname}: missing read1 (FLAG 0x40). A record-level MAPQ filter "
+            f"(samtools view -q) orphans mates; classify the unfiltered "
+            f"alignment and let this step apply the threshold per pair.")
     if all(record.is_read1 for record in pair):
         raise ValueError(f"{qname}: missing read2, both primary records set FLAG 0x40")
     if len(pair) < 2:

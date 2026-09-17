@@ -57,8 +57,27 @@ def main(argv=None):
             f"panel FASTA matches the spike-in used and that counting ran on "
             f"untrimmed reads.")
 
-    on_target = sum(v for name, v in counts.items()
-                    if args.target and targets.get(name) == args.target)
+    # Per-PTM totals (the panel gives each target two barcodes, A and B).
+    per_ptm = {}
+    for name, value in counts.items():
+        per_ptm[targets.get(name, name)] = per_ptm.get(targets.get(name, name), 0) + value
+
+    on_target = per_ptm.get(args.target, 0) if args.target else 0
+
+    # In ChIP-Rx the spiked material is a single species captured by its own
+    # antibody, so nonspecific carryover is a small relative term. Here 15 of
+    # 16 panel members are off-target by design, so nonspecific capture is a
+    # large share of the on-target count. The median off-target PTM estimates
+    # that background; the median rather than the mean, because chemically
+    # adjacent marks are plausibly real cross-reactivity rather than background.
+    off_values = sorted(v for k, v in per_ptm.items() if k != args.target)
+    if off_values:
+        mid = len(off_values) // 2
+        off_median = (off_values[mid] if len(off_values) % 2
+                      else (off_values[mid - 1] + off_values[mid]) / 2)
+    else:
+        off_median = 0
+    bg_corrected = on_target - off_median
     if on_target > 0:
         external = on_target
         basis = f"on_target:{args.target}"
@@ -83,14 +102,16 @@ def main(argv=None):
         out.write("SampleID\thost_fragments\texternal_fragments\t"
                   "classified_fragments\texternal_fraction\tmapq_threshold\t"
                   "duplicate_state\tcalibration_basis\ttotal_barcode_fragments\t"
-                  "on_target_fraction\n")
+                  "on_target_fraction\texternal_count_bg_corrected\t"
+                  "off_target_median\n")
         for threshold in sorted(host, key=int):
             host_n = host[threshold]
             classified = host_n + external
             fraction = external / classified if classified else float("nan")
             out.write(f"{args.sample_id}\t{host_n}\t{external}\t{classified}\t"
                       f"{fraction}\t{threshold}\tall\t{basis}\t{total}\t"
-                      f"{external / total if total else float('nan')}\n")
+                      f"{external / total if total else float('nan')}\t"
+                      f"{bg_corrected:g}\t{off_median:g}\n")
     return 0
 
 

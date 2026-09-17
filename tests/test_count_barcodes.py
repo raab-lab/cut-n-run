@@ -198,6 +198,24 @@ class BarcodeCalibrationSummaryTests(unittest.TestCase):
         self.assertEqual({r[7] for r in rows}, {"on_target:H3K4me3"})
         self.assertEqual({r[8] for r in rows}, {"1000"})  # total panel retained as QC
 
+    def test_background_corrected_count_subtracts_the_median_off_target(self):
+        # Panel: on-target H3K4me3 = 250 (A+B); off-target PTMs = 375 and 375.
+        _, out = self.build(self.barcode_summary(on_target=250, off_target=750),
+                            self.host_counts())
+        rows = [l.split("\t") for l in out.read_text().splitlines()[1:]]
+        # Two off-target PTMs at 375 each -> median 375 -> 250 - 375 = -125.
+        self.assertEqual({r[10] for r in rows}, {"-125"})
+        self.assertEqual({r[11] for r in rows}, {"375"})
+
+    def test_background_correction_is_positive_with_real_enrichment(self):
+        _, out = self.build(self.barcode_summary(on_target=4000, off_target=400),
+                            self.host_counts())
+        rows = [l.split("\t") for l in out.read_text().splitlines()[1:]]
+        # Off-target PTMs at 200 each -> median 200 -> 4000 - 200 = 3800.
+        self.assertEqual({r[10] for r in rows}, {"3800"})
+        # The uncorrected on-target count is unchanged, so the default stands.
+        self.assertEqual({r[2] for r in rows}, {"4000"})
+
     def test_absent_target_falls_back_to_the_whole_panel_and_says_so(self):
         # An IgG control has no on-target member.
         res, out = self.build(self.barcode_summary(), self.host_counts(), target="IgG")
@@ -215,7 +233,9 @@ class BarcodeCalibrationSummaryTests(unittest.TestCase):
                                       "classified_fragments", "external_fraction",
                                       "mapq_threshold", "duplicate_state"])
         self.assertEqual(header[7:], ["calibration_basis", "total_barcode_fragments",
-                                      "on_target_fraction"])
+                                      "on_target_fraction",
+                                      "external_count_bg_corrected",
+                                      "off_target_median"])
 
     def test_every_calibrator_pair_class_is_empty_with_no_match_prefix(self):
         # All fixture pairs must land in both_host, so the host count is honest.

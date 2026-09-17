@@ -146,7 +146,11 @@ workflow CNR {
 		// external measurement differs from a standard run.
 		if(params.barcode_fasta) {
 			count_barcodes(reads, file(params.barcode_fasta))
-			host_pair_counts(host_marked_bam, params.mapq)
+			// The unfiltered BAM, not host_marked_bam: the MAPQ filter is
+			// record-level and orphans mates, while pair classification
+			// requires complete pairs. This matches where the competitive
+			// path classifies, and the classifier applies MAPQ itself.
+			host_pair_counts(sort.out, params.mapq)
 
 			barcode_calibration_summary(
 				count_barcodes.out.counts.join(host_pair_counts.out.counts),
